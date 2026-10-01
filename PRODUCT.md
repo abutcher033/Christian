@@ -12,14 +12,15 @@ Warm, Christ-centered, Bible-believing. We hold the authority of Scripture and t
 
 ## What it is
 
-A physical Bible on a wooden table. The reader flips real pages through the **whole Protestant Bible** (66 books), every verse, in order. The v1 text is the World English Bible, Protestant Edition, which is public domain, so the full book can ship. Study notes, infographics, maps, and videos are optional annotations on a passage. They are not a substitute for the text. See [PLAN.md](PLAN.md) for pagination, page-turn behavior, and licensing.
+A physical Bible on a wooden table. The reader flips real pages through the **whole Protestant Bible** (66 books), every verse, in order. That flippable book is the product. Study notes, infographics, maps, and videos are optional annotations on a passage. They are not a substitute for the text. See [PLAN.md](PLAN.md) for pagination, page-turn behavior, and licensing.
 
-ESV may be offered later if Crossway licenses it. v1 does not wait on that license and does not ship ESV excerpts instead of the book.
+The preferred translation label is **NKJV (license pending)**. The New King James Version is copyrighted by Thomas Nelson, so v1 does not put NKJV on the page. The reading text is a full public-domain Bible: the World English Bible by default, or the King James Version. v1 does not wait on an NKJV license and does not ship NKJV excerpts instead of the book.
 
 ## What is in the book (v1)
 
 - **Canon:** 66 books, Protestant order, Genesis through Revelation. No Apocrypha.
-- **Text:** World English Bible, Protestant Edition (WEBP), verbatim.
+- **Preferred label:** NKJV (license pending). Not the text on the page.
+- **Text:** World English Bible, Protestant Edition (WEBP), verbatim. Public-domain KJV is an allowed alternate. Not NKJV.
 - **Pages:** Flowing multi-verse pages you turn continuously. A chapter may cross a page. A book starts on a right-hand page.
 - **Seek:** Jump to a book, chapter, and verse, then keep turning.
 
@@ -38,8 +39,9 @@ The first annotations (not a limit on the canon) may cover John 1, John 3, and G
 - Modalism
 - Law without gospel
 - Numerology / secret codes
-- Copyrighted Scripture without a license (ESV included). WEBP verbatim text is the v1 book.
-- Change WEBP wording and still call it the World English Bible
+- Copyrighted Scripture without a license. NKJV included. WEB or public-domain KJV verbatim text is the v1 book.
+- Change WEB wording and still call it the World English Bible
+- Call the on-page text NKJV while the pages are WEB or KJV
 - Dark patterns, streaks, or clickbait
 
 ## Platform

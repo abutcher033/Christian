@@ -18,7 +18,7 @@ A build that only opens John 1, John 3, and Genesis 1 with preview lines has not
 
 1. **Full corpus.** 66 books, Protestant canon, evangelical use. Old Testament 39 books and New Testament 27 books, in standard Protestant order. No Deuterocanon / Apocrypha.
 2. **Real pages.** Each page face shows real chapter and verse text. Pagination is the flowing multi-verse layout locked below. Page-turn UX is continuous from the first verse to the last.
-3. **Legal full text in v1.** Ship the **World English Bible, Protestant Edition (WEBP)**. It is public domain. ESV is optional later, only with a Crossway license. Do not block, shorten, or stub the book while waiting on ESV.
+3. **Legal full text in v1.** Preferred Settings label is **NKJV (license pending)**. The New King James Version is copyrighted by Thomas Nelson and must not be shipped line for line until that license exists. Until then the pages are a complete public-domain Bible: **World English Bible (WEB)** by default, or the **King James Version (KJV)**. Do not block, shorten, or stub the book while waiting on NKJV.
 4. **Study overlays are secondary.** Infographics, maps, videos, notes, timelines, and word studies annotate a verse range on the page. The Bible text is the product. A page with no overlay is complete.
 5. **Stack stays locked.** Next.js 14 + TypeScript + React Three Fiber / drei, web-first.
 
@@ -30,7 +30,7 @@ A build that only opens John 1, John 3, and Genesis 1 with preview lines has not
 | 3D | **React Three Fiber** (`@react-three/fiber`) + **@react-three/drei** (including `Html` overlays) |
 | Styles | Plain **CSS** (`app/globals.css`). Tailwind is optional later. |
 | Platform | **Web-first**. Wrap with **Capacitor** later for iOS/Android. |
-| Scripture | **WEBP** full text in `data/bible/web/`, paginated into `data/bible/pages.json` |
+| Scripture | Full public-domain text, **WEB** by default (`data/bible/web/`) or **KJV** (`data/bible/kjv/`), paginated into `data/bible/pages.json`. Preferred label **NKJV (license pending)** is not the page text |
 | Notes | Typed study entries in `data/studyContent.ts`, anchored to verse references |
 
 No secrets are required for the local 3D reader. Optional env keys (`NEXT_PUBLIC_MEDIA_BASE_URL`, `NEXT_PUBLIC_ANALYTICS_ID`) stay empty in dev.
@@ -45,28 +45,54 @@ Protestant order, USFM book ids. The ingest and the verify script both use this 
 
 Display names are the ordinary English names (Genesis … Revelation, Song of Solomon, Psalm). Ids stay USFM.
 
-## Scripture text (WEBP)
+## Translations
 
-v1 text is the **World English Bible, Protestant Edition** published by eBible.org:
+Two different labels, on purpose:
+
+| Role | Label | On the page in v1? |
+|------|--------|--------------------|
+| Preferred translation | **NKJV (license pending)** | No |
+| Active reading text | **World English Bible (public domain)**, or **King James Version (public domain)** if that corpus is ingested | Yes, the whole Bible |
+
+The product is still the whole book with flippable pages. The preferred label does not change that, and it does not put NKJV wording on those pages.
+
+### Preferred label: NKJV (license pending)
+
+Austin's preferred translation is the **New King James Version (NKJV)**, copyright Thomas Nelson. Settings shows that preference as **NKJV (license pending)** until a license covers the full line-for-line text.
+
+Until that license exists:
+
+- Do not commit NKJV verse text.
+- Do not render NKJV verse text, including "sample" chapters.
+- Do not label WEB or KJV pages as NKJV.
+- The NKJV control is visible and not selectable as the reading text. Selecting it must not blank, truncate, or replace the public-domain book.
+- A Thomas Nelson license, once it exists, is a full-text swap through the same pagination and page-turn pipeline (66 books, every verse). It is not an excerpt mode.
+
+Absence of an NKJV license is not a reason to ship excerpts.
+
+### v1 corpus: WEB, or KJV
+
+Ship one complete public-domain text so the book does not wait on Thomas Nelson.
+
+**Default: World English Bible, Protestant Edition (WEBP).**
 
 - Edition id: `engwebp` (U.S. spelling; divine name rendered LORD / GOD as in that edition).
 - Corpus page: <https://ebible.org/engwebp/>
 - Public-domain notice: <https://ebible.org/engwebp/copyright.htm>
 - Scope: the 66-book Protestant subset only. Do not ingest a WEB edition that includes the Deuterocanon.
+- WEB is public domain. The full verse text may be committed, displayed, and shipped. "World English Bible" is a trademark of eBible.org and may be used only on a faithful copy. If the wording changes, stop calling it the World English Bible.
+- Translator footnotes (NU / TR and similar) may be omitted in v1. They must not be required to ship, and they must not replace verse text.
+- Title-face and active-text credit: "Scripture is from the World English Bible (public domain)."
 
-WEBP is in the public domain. The full verse text may be committed, displayed, and shipped. "World English Bible" is a trademark of eBible.org and may be used only on a faithful copy. Store and render verse wording **verbatim**. Do not paraphrase, abridge, modernize, or "sample" it. If the wording changes, stop calling it the World English Bible.
+**Allowed alternate: King James Version (KJV).**
 
-Translator footnotes (NU / TR and similar) may be omitted in v1. They must not be required to ship, and they must not replace verse text.
+- The public-domain Authorized Version text of the same 66 books, verbatim.
+- Use a public-domain text. Do not ingest a publisher edition whose typography, notes, cross-references, or red-letter markup are copyrighted.
+- Same pagination rules, leaf model, and verifier. Path: `data/bible/kjv/` instead of `data/bible/web/`.
+- Active-text credit then reads "Scripture is from the King James Version (public domain)."
+- WEB remains the default ingest. Choosing KJV is allowed. Choosing neither, or waiting on NKJV, is not.
 
-In-app credit, on the title face and in Settings: "Scripture is from the World English Bible (public domain)."
-
-**ESV** stays a possible later translation in Settings, behind a Crossway license for substantial quotation. Until that license exists:
-
-- Do not commit ESV text.
-- Do not present ESV as the reading text.
-- A disabled "ESV (license required)" control is allowed. Choosing it must not blank or truncate the WEBP book.
-
-Absence of an ESV license is not a reason to ship excerpts.
+Store and render the active text **verbatim**. Do not paraphrase, abridge, or modernize it, and do not retitle it as NKJV.
 
 ## Pagination (locked)
 
@@ -98,7 +124,7 @@ Rules:
 6. Running headers (book name and chapter) sit in the margin and are **not** part of `PAGE_LINE_BUDGET`.
 7. Page index `0` is the first Scripture face: Genesis, beginning at Genesis 1:1. The last Scripture face ends at Revelation 22:21.
 
-Do not hardcode a page count. `PAGE_COUNT` is `pages.json.length` after pagination. A full WEBP at this density is on the order of a few thousand faces. That count is an output of the script, then committed.
+Do not hardcode a page count. `PAGE_COUNT` is `pages.json.length` after pagination. A full public-domain Bible at this density is on the order of a few thousand faces. That count is an output of the script, then committed. The same constants apply to WEB and to KJV.
 
 Spot-checks the verifier must enforce even before a full visual pass: Genesis 1 has 31 verses, John 3 has 36, Psalm 119 has 176, Revelation 22 has 21, and those verses are present verbatim.
 
@@ -189,13 +215,14 @@ When the app is added, these paths are the map. This plan does not add them.
 | `components/bible/PageTurnControls.tsx` | Prev / next and the passage label for the open spread |
 | `components/bible/PassageJump.tsx` | Book / chapter / verse seek into the same book |
 | `components/bible/Table.tsx` | Wooden table |
-| `components/settings/SettingsPanel.tsx` | WEBP label, Scripture-first, motion, disabled ESV |
+| `components/settings/SettingsPanel.tsx` | Preferred label "NKJV (license pending)" (not selectable); active text WEB or KJV; Scripture-first; motion |
 | `components/study/MediaPanel.tsx` | Note-less media frame: infographic, map, video |
 | `components/study/StudyEntryMarker.tsx` | Tappable marker on a verse that has an entry (`Html`) |
 | `components/study/StudyOverlay.tsx` | Entry list and single-entry overlay |
 | `data/bible/canon.ts` | The 66 USFM ids, order, and English names |
-| `data/bible/web/manifest.json` | Ingested WEBP: book ids, chapter counts, verse counts |
-| `data/bible/web/books/<id>.json` | Verbatim chapters and verses for one book |
+| `data/bible/web/manifest.json` | Ingested WEBP (default): book ids, chapter counts, verse counts |
+| `data/bible/web/books/<id>.json` | Verbatim WEBP chapters and verses for one book |
+| `data/bible/kjv/` | Optional KJV corpus, same JSON shape, only if KJV is the active text |
 | `data/bible/pages.json` | Generated page faces (script output, committed) |
 | `data/studyContent.ts` | `StudyEntry` seeds and lookups; anchors are verse refs |
 | `docs/PLAN.md` | Scaffold copy of this plan (this file is canonical until then) |
@@ -209,7 +236,7 @@ When the app is added, these paths are the map. This plan does not add them.
 | `public/media/README.md` | Where final infographic, map, and video files go |
 | `public/media/infographics/john-3-believe-paths.svg` | John 3 infographic stub |
 | `public/media/maps/gen-1-creation-week.svg` | Genesis 1 map stub |
-| `scripts/ingest-web.ts` | Download or read a local WEBP export into `data/bible/web/` |
+| `scripts/ingest-web.ts` | Download or read a local WEBP export into `data/bible/web/` (or KJV into `data/bible/kjv/`) |
 | `scripts/paginate-bible.ts` | Write `data/bible/pages.json` from the corpus |
 | `scripts/verify-bible.ts` | Coverage check below; fails the build on a miss |
 | `tsconfig.json` | Strict TypeScript, `@/*` paths |
@@ -218,19 +245,19 @@ Routes:
 
 | Route | Role |
 |-------|------|
-| `/` | 3D Bible, full WEBP page turns, passage label, optional study overlay |
-| `/settings` | World English Bible (public domain), Scripture-first, large taps, reduced motion; ESV disabled until licensed |
+| `/` | 3D Bible, full public-domain page turns, passage label, optional study overlay |
+| `/settings` | Preferred label "NKJV (license pending)"; active text names WEB or KJV; Scripture-first; large taps; reduced motion |
 | `/study/[entryId]` | Full study page for one entry; static params from `STUDY_ENTRIES` |
 
 ## Data model
 
-Corpus files hold verbatim WEBP. Page files hold layout only. Study files hold annotations.
+Corpus files hold the verbatim active public-domain text (WEBP by default, or KJV). Page files hold layout only. Study files hold annotations. They never hold NKJV text while the license is pending.
 
 ```ts
 type BibleVerse = {
-  /** Verse number as in WEBP */
+  /** Verse number as in the active public-domain text */
   v: number;
-  /** Verbatim WEBP verse text, no added wording */
+  /** Verbatim verse text, no added wording */
   t: string;
 };
 
@@ -296,7 +323,7 @@ type StudyEntry = {
   verseEnd: number;
   title: string;
   summary: string;
-  /** Short markdown. Do not paste copyrighted Scripture. WEBP verses are read from the page, not copied here. */
+  /** Short markdown. Do not paste copyrighted Scripture (NKJV included). Verses are read from the page, not copied here. */
   bodyMd: string;
   themes: string[];
   relatedIds: string[];
@@ -322,11 +349,11 @@ Lookups: `getEntryById`, `getEntriesForVerseRange`, `getPage`, `getSpreadForVers
 - Blank and matter faces contain no verse lines.
 - Book-title lines occur only on recto indices (`index % 2 === 0`).
 
-A reader check, once the scene exists: from spread 0, programmatic forward turns land on the faces that contain John 1:1, John 3:16, and Revelation 22:21, and the rendered string equals the WEBP verse. Turning backward from Revelation returns toward Genesis without a mode switch.
+A reader check, once the scene exists: from spread 0, programmatic forward turns land on the faces that contain John 1:1, John 3:16, and Revelation 22:21, and the rendered string equals the active public-domain verse. Turning backward from Revelation returns toward Genesis without a mode switch. Settings shows **NKJV (license pending)** and the open page is still WEB or KJV.
 
 ## Content pipeline
 
-1. Ingest WEBP (`engwebp`) into `data/bible/web/` with verbatim verse text.
+1. Ingest the v1 corpus: WEBP (`engwebp`) into `data/bible/web/`, or public-domain KJV into `data/bible/kjv/`. Verbatim verse text only. No NKJV file.
 2. Run pagination and commit `pages.json`.
 3. Run `verify-bible`. Do not merge a corpus change the script rejects.
 4. Render those pages on the 3D leaves and wire continuous turns plus passage seek.
@@ -341,25 +368,26 @@ A reader check, once the scene exists: from spread 0, programmatic forward turns
 - No modalism. The Son is distinct from the Father and truly God.
 - No law without gospel. Grace alone, through faith alone, in Christ alone.
 - No numerology or secret codes.
-- No copyrighted Scripture (including ESV) without a license. WEBP verbatim text is allowed.
+- No copyrighted Scripture without a license. NKJV (Thomas Nelson) is included: no full line-for-line text while the license is pending. WEB and public-domain KJV verbatim text are allowed.
 - No dark patterns, streaks, or clickbait.
 - Do not dunk on denominations.
-- Do not alter WEBP wording and still call it the World English Bible.
+- Do not alter WEB wording and still call it the World English Bible.
+- Do not label WEB or KJV pages as NKJV.
 
 ## Done when
 
 The implementation is done for this requirement when:
 
 - The app opens on a 3D book resting on a table.
-- The first Scripture page starts at Genesis 1:1 in WEBP, readable without zooming.
+- The first Scripture page starts at Genesis 1:1 in the active public-domain text (WEB by default, or KJV), readable without zooming.
 - Flipping pages walks the canon in order and can reach Revelation 22:21, every verse represented on some face.
 - `verify-bible` passes on the committed corpus and page index.
 - Study overlays, if present, sit on top of that text and can be dismissed.
-- The book does not depend on an ESV license.
+- Settings shows the preferred label **NKJV (license pending)**. The pages do not contain NKJV text, and the book does not depend on an NKJV license.
 
 ## Next engineering steps
 
-1. Ingest and paginate WEBP. Land `canon.ts`, the `data/bible/web/` JSON, `pages.json`, and `verify-bible`. This is the first code change, before visual polish.
+1. Ingest and paginate WEB (or KJV). Land `canon.ts`, the corpus JSON, `pages.json`, and `verify-bible`. Do not add NKJV text. This is the first code change, before visual polish.
 2. Land the Next.js 14 + R3F scaffold from the file map: table, seated camera, virtualized leaves, textures from `pages.json`, continuous turns, passage seek.
 3. Attach the three seed study entries by verse anchor. Confirm the underlying verses remain when the overlay closes.
 4. Persist last spread and last entry in `localStorage`.
