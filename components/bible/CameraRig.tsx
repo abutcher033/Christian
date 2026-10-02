@@ -10,9 +10,9 @@ type Props = {
 };
 
 const POSE: Record<ReadingDistance, { y: number; z: number; lookY: number; lookZ: number; fit: number }> = {
-  close: { y: 1.72, z: 0.26, lookY: 0.2, lookZ: 0.03, fit: 2.42 },
-  cozy: { y: 2.48, z: 0.82, lookY: 0.3, lookZ: -0.2, fit: 3.05 },
-  wide: { y: 3.2, z: 1.35, lookY: 0.46, lookZ: -0.55, fit: 3.7 },
+  close: { y: 1.95, z: 0.48, lookY: 0.2, lookZ: -0.02, fit: 2.52 },
+  cozy: { y: 2.28, z: 0.7, lookY: 0.24, lookZ: -0.14, fit: 2.78 },
+  wide: { y: 3.2, z: 1.55, lookY: 0.2, lookZ: -0.78, fit: 4.4 },
 };
 
 /** Steady overhead reading view. The first frame snaps into place so the book does not drift in. */

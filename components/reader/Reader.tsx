@@ -333,6 +333,19 @@ export function Reader() {
 
   return (
     <>
+      <SceneBar
+        scene={settings.scene}
+        soundOn={settings.soundOn}
+        volume={settings.volume}
+        distance={settings.readingDistance}
+        focus={focus}
+        onScene={(scene) => update({ scene })}
+        onSound={(soundOn) => update({ soundOn })}
+        onVolume={(volume) => update({ volume })}
+        onDistance={(readingDistance) => update({ readingDistance })}
+        onFocus={setFocus}
+      />
+
       <BibleScene
         pages={pages}
         spread={spread}
@@ -352,19 +365,6 @@ export function Reader() {
       <div className="sr-only" aria-live="polite">
         {label}. {pageLabel}. {reading}
       </div>
-
-      <SceneBar
-        scene={settings.scene}
-        soundOn={settings.soundOn}
-        volume={settings.volume}
-        distance={settings.readingDistance}
-        focus={focus}
-        onScene={(scene) => update({ scene })}
-        onSound={(soundOn) => update({ soundOn })}
-        onVolume={(volume) => update({ volume })}
-        onDistance={(readingDistance) => update({ readingDistance })}
-        onFocus={setFocus}
-      />
 
       <div className="hud">
         {!settings.hintSeen && (

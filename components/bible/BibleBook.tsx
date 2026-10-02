@@ -8,7 +8,7 @@ import type { LaidPage } from '@/lib/bible/pages';
 import { getAmbience } from '@/lib/ambience/engine';
 import { useLeatherTexture, usePageEdgeTexture } from './materials';
 import { BOOK_TILT, SHEET_H, SHEET_W } from './metrics';
-import { curlSheet, createLeaf, easePage } from './pageCurl';
+import { curlSheet, createLeaf, createPageMaterial, easePage } from './pageCurl';
 import { pruneTextures, textureFor } from './pageTextures';
 
 export type BibleBookHandle = {
@@ -99,60 +99,47 @@ function TurningSheet({
   progressRef: MutableRefObject<number>;
   stack: MutableRefObject<{ y: number }>;
 }) {
-  const frontGeo = useMemo(() => createLeaf(SHEET_W, SHEET_H, 'front', dir), [dir]);
-  const backGeo = useMemo(() => createLeaf(SHEET_W, SHEET_H, 'back', dir), [dir]);
+  const geo = useMemo(() => createLeaf(SHEET_W, SHEET_H), []);
   const frontTex = useMemo(() => textureFor(front), [front]);
   const backTex = useMemo(() => textureFor(back), [back]);
+  const material = useMemo(() => createPageMaterial(frontTex, backTex, dir), [frontTex, backTex, dir]);
   const group = useRef<THREE.Group>(null);
   const shadow = useRef<THREE.Mesh>(null);
 
   useEffect(() => {
-    curlSheet(frontGeo, 0);
-    curlSheet(backGeo, 0);
+    curlSheet(geo, 0, dir);
     return () => {
-      frontGeo.dispose();
-      backGeo.dispose();
+      geo.dispose();
+      material.dispose();
     };
-  }, [frontGeo, backGeo]);
+  }, [dir, geo, material]);
 
   useFrame(() => {
     const progress = progressRef.current;
-    curlSheet(frontGeo, progress);
-    curlSheet(backGeo, progress);
-    if (group.current) group.current.position.y = stack.current.y + 0.004;
-    const material = shadow.current?.material as THREE.MeshBasicMaterial | undefined;
-    if (shadow.current && material) {
-      const strength = Math.sin(Math.min(1, Math.max(0, progress)) * Math.PI);
-      material.opacity = 0.22 * strength;
-      shadow.current.position.x = dir === 'next' ? -SHEET_W * 0.35 : SHEET_W * 0.35;
+    curlSheet(geo, progress, dir);
+    if (group.current) group.current.position.y = stack.current.y + 0.006;
+    const shadowMaterial = shadow.current?.material as THREE.MeshBasicMaterial | undefined;
+    if (shadow.current && shadowMaterial) {
+      const travel = Math.min(1, Math.max(0, progress));
+      const strength = Math.sin(travel * Math.PI);
+      const edge = Math.cos(travel * Math.PI) * SHEET_W;
+      shadowMaterial.opacity = 0.26 * strength;
+      shadow.current.position.x = (dir === 'next' ? 1 : -1) * edge * 0.42;
       shadow.current.scale.x = 0.35 + strength * 0.85;
     }
   });
 
   return (
-    <group ref={group} position={[0, stack.current.y + 0.004, 0]}>
+    <group ref={group} position={[0, stack.current.y + 0.006, 0]}>
       <mesh
         ref={shadow}
         rotation={[-Math.PI / 2, 0, 0]}
-        position={[dir === 'next' ? -0.3 : 0.3, -0.01, 0]}
+        position={[dir === 'next' ? -0.25 : 0.25, -0.012, 0]}
       >
         <planeGeometry args={[SHEET_W, SHEET_H * 0.92]} />
         <meshBasicMaterial color="#1a100c" transparent opacity={0} depthWrite={false} />
       </mesh>
-      <mesh geometry={frontGeo} castShadow>
-        <meshStandardMaterial map={frontTex} roughness={0.74} metalness={0} side={THREE.FrontSide} />
-      </mesh>
-      <mesh geometry={backGeo} castShadow>
-        <meshStandardMaterial
-          map={backTex}
-          roughness={0.74}
-          metalness={0}
-          side={THREE.FrontSide}
-          polygonOffset
-          polygonOffsetFactor={-1}
-          polygonOffsetUnits={-1}
-        />
-      </mesh>
+      <mesh geometry={geo} material={material} castShadow />
     </group>
   );
 }
@@ -242,7 +229,7 @@ export const BibleBook = forwardRef<BibleBookHandle, Props>(function BibleBook(
       return;
     }
     const distance = Math.abs(to - from);
-    const duration = from === 0 && to === 1 ? 0.98 : Math.max(0.24, distance * 0.72);
+    const duration = from === 0 && to === 1 ? 1.05 : Math.max(0.32, distance * 0.85);
     animRef.current = { dir, from, to, start: -1, duration, commit };
     progressRef.current = from;
     const current = curlRef.current;

@@ -1,13 +1,10 @@
 import * as THREE from 'three';
 import { SHEET_W } from './metrics';
 
-/** Curl radius in world units. Large enough to read as paper from above the desk. */
-export const CURL_RADIUS = 0.125;
-
 /** Starts moving at once, then eases onto the stack. */
 export function easePage(amount: number): number {
   const t = Math.min(1, Math.max(0, amount));
-  return sampleBezier(t, 0.12, 0.78, 0.16, 1);
+  return sampleBezier(t, 0.16, 0.72, 0.2, 1);
 }
 
 function sampleBezier(t: number, x1: number, y1: number, x2: number, y2: number): number {
@@ -31,71 +28,80 @@ function bezierDeriv(t: number, c1: number, c2: number): number {
   return 3 * mt * mt * c1 + 6 * mt * t * (c2 - c1) + 3 * t * t * (1 - c2);
 }
 
-/**
- * A sheet hinged at the spine.
- * `next` extends to the right. `prev` extends to the left, with UVs kept readable.
- */
-export function createLeaf(
-  width: number,
-  height: number,
-  face: 'front' | 'back',
-  dir: 'next' | 'prev',
-) {
-  const geo = new THREE.PlaneGeometry(width, height, 72, 12);
+/** A flat sheet. x = 0 is the spine, x = width is the outer edge. */
+export function createLeaf(width: number, height: number) {
+  const geo = new THREE.PlaneGeometry(width, height, 72, 10);
   geo.rotateX(-Math.PI / 2);
   geo.translate(width / 2, 0, 0);
-  const uv = geo.attributes.uv as THREE.BufferAttribute;
-  if (face === 'back') {
-    geo.scale(1, -1, 1);
-    for (let i = 0; i < uv.count; i += 1) uv.setX(i, 1 - uv.getX(i));
-  }
-  if (dir === 'prev') {
-    const pos = geo.attributes.position as THREE.BufferAttribute;
-    for (let i = 0; i < pos.count; i += 1) pos.setX(i, -pos.getX(i));
-    for (let i = 0; i < uv.count; i += 1) uv.setX(i, 1 - uv.getX(i));
-  }
   geo.userData.base = Float32Array.from(geo.attributes.position.array);
-  geo.computeVertexNormals();
   return geo;
 }
 
 /**
- * Roll the sheet around a cylinder that travels from the outer edge to the spine.
- * Progress 0 is flat on the starting side. Progress 1 lies flat on the other side.
- * The page stays facing the reader instead of standing on edge.
+ * Bend the sheet around the spine.
+ * The outer edge leads, so the page curves instead of flipping edge-on all at once.
+ * At the end every point has swung from x = s to x = -s and lies flat.
+ * `dir` mirrors that swing for a backward turn.
  */
-export function curlSheet(geo: THREE.BufferGeometry, progress: number) {
+export function curlSheet(geo: THREE.BufferGeometry, progress: number, dir: 'next' | 'prev') {
   const pos = geo.attributes.position as THREE.BufferAttribute;
+  const normal = geo.attributes.normal as THREE.BufferAttribute;
   const base = geo.userData.base as Float32Array;
   const width = SHEET_W;
-  const radius = CURL_RADIUS;
-  const arc = Math.PI * radius;
   const t = Math.min(1, Math.max(0, progress));
-  const fold = width + (-arc / 2 - width) * t;
-  const settle = 0.0035 * (1 - t);
+  const sign = dir === 'next' ? 1 : -1;
+  const edge = Math.PI * t;
+  const bend = Math.sin(Math.PI * t);
 
   for (let i = 0; i < pos.count; i += 1) {
-    const x0 = base[i * 3];
-    const z0 = base[i * 3 + 2];
-    const side = x0 < 0 ? -1 : 1;
-    const x = Math.abs(x0);
-    let along = x;
-    let ny = 0;
-    if (x > fold) {
-      const dist = x - fold;
-      if (dist <= arc) {
-        const angle = dist / radius;
-        along = fold + Math.sin(angle) * radius;
-        ny = radius * (1 - Math.cos(angle));
-      } else {
-        along = fold - (dist - arc);
-        ny = settle;
-      }
-    }
-    const placed = along >= 0 ? side * along : -side * Math.abs(along);
-    pos.setXYZ(i, placed, ny, z0);
+    const s = base[i * 3];
+    const z = base[i * 3 + 2];
+    const across = s / width;
+    const shaped = Math.pow(across, 0.58);
+    const angle = edge * (1 - bend * (1 - shaped));
+    const lift = Math.sin(angle);
+    const nx = Math.cos(angle) * s * sign;
+    const ny = lift * s + Math.sin(across * Math.PI) * bend * 0.035;
+    pos.setXYZ(i, nx, ny + 0.004, z);
+    normal.setXYZ(i, -Math.sin(angle) * sign, Math.cos(angle), 0);
   }
   pos.needsUpdate = true;
-  geo.computeVertexNormals();
+  normal.needsUpdate = true;
   geo.computeBoundingSphere();
+}
+
+export function createPageMaterial(front: THREE.Texture, back: THREE.Texture, dir: 'next' | 'prev') {
+  const material = new THREE.MeshStandardMaterial({
+    map: front,
+    roughness: 0.82,
+    metalness: 0,
+    side: THREE.DoubleSide,
+  });
+  material.polygonOffset = true;
+  material.polygonOffsetFactor = -1;
+  material.polygonOffsetUnits = -1;
+  material.customProgramCacheKey = () => `bible-page-${dir}`;
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.backMap = { value: back };
+    shader.uniforms.uPrev = { value: dir === 'prev' ? 1 : 0 };
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        '#include <map_pars_fragment>',
+        '#include <map_pars_fragment>\nuniform sampler2D backMap;\nuniform float uPrev;\n',
+      )
+      .replace(
+        '#include <map_fragment>',
+        `
+#ifdef USE_MAP
+  vec2 pageUv = vMapUv;
+  if (uPrev > 0.5) pageUv.x = 1.0 - pageUv.x;
+  vec2 backUv = uPrev > 0.5 ? vMapUv : vec2(1.0 - vMapUv.x, vMapUv.y);
+  float showBack = (uPrev > 0.5) ? (gl_FrontFacing ? 1.0 : 0.0) : (gl_FrontFacing ? 0.0 : 1.0);
+  vec4 sampledDiffuseColor = mix(texture2D(map, pageUv), texture2D(backMap, backUv), showBack);
+  diffuseColor *= sampledDiffuseColor;
+#endif
+`,
+      );
+  };
+  return material;
 }

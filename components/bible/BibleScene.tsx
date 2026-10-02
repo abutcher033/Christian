@@ -88,7 +88,7 @@ export function BibleScene({
           />
           <EffectComposer multisampling={0} enableNormalPass={false}>
             <SMAA />
-            <Bloom luminanceThreshold={0.86} mipmapBlur intensity={0.28} />
+            <Bloom luminanceThreshold={0.92} mipmapBlur intensity={0.18} />
             <Vignette eskil={false} offset={0.22} darkness={0.42} />
           </EffectComposer>
         </Suspense>
