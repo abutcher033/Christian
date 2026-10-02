@@ -54,7 +54,7 @@ export function BibleScene({
       <Canvas
         shadows
         dpr={[1, 1.75]}
-        camera={{ position: [0, 1.22, 1.58], fov: 34, near: 0.1, far: 40 }}
+        camera={{ position: [0, 3.2, 0.48], fov: 36, near: 0.1, far: 40 }}
         gl={{
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
