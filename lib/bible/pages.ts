@@ -2,6 +2,8 @@ import type { BibleBook, BibleCorpus, Place } from './types';
 
 export const PAGE_W = 1200;
 export const PAGE_H = 1700;
+/** Backing-store scale. Layout stays in PAGE_W × PAGE_H so page breaks do not move. */
+export const PAGE_SCALE = 2;
 export const MARGIN_X = 86;
 export const BODY_TOP = 172;
 export const LINE_H = 52;
@@ -108,7 +110,7 @@ function makeSpecial(kind: Exclude<PageKind, 'scripture'>, index: number): LaidP
       lines: [],
       anchor: null,
       headerLeft: 'Holy Bible',
-      headerRight: 'WEB',
+      headerRight: '',
     };
   }
   return {
@@ -359,18 +361,18 @@ function paintPaper(ctx: CanvasRenderingContext2D) {
     PAGE_H * 0.5,
     PAGE_W * 0.78,
   );
-  glow.addColorStop(0, 'rgba(255, 252, 245, 0.35)');
-  glow.addColorStop(1, 'rgba(120, 84, 48, 0.07)');
+  glow.addColorStop(0, 'rgba(255, 252, 245, 0.45)');
+  glow.addColorStop(1, 'rgba(120, 84, 48, 0.035)');
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, PAGE_W, PAGE_H);
 
   ctx.save();
-  for (let i = 0; i < 1400; i += 1) {
+  for (let i = 0; i < 420; i += 1) {
     const x = Math.random() * PAGE_W;
     const y = Math.random() * PAGE_H;
-    ctx.globalAlpha = Math.random() * 0.045;
+    ctx.globalAlpha = Math.random() * 0.03;
     ctx.fillStyle = Math.random() > 0.5 ? '#8a6844' : '#fffaf2';
-    ctx.fillRect(x, y, 1 + Math.random() * 1.6, 0.7);
+    ctx.fillRect(x, y, 1, 0.6);
   }
   ctx.restore();
 
@@ -387,17 +389,19 @@ function drawCentered(ctx: CanvasRenderingContext2D, text: string, y: number) {
 function drawFrontispiece(ctx: CanvasRenderingContext2D) {
   paintPaper(ctx);
   ctx.fillStyle = '#c4a35a';
-  ctx.fillRect(PAGE_W / 2 - 70, 470, 140, 2);
+  ctx.fillRect(PAGE_W / 2 - 70, 430, 140, 2);
   ctx.fillStyle = '#5c3d2e';
-  ctx.font = 'italic 700 58px "Libre Baskerville", Georgia, serif';
-  drawCentered(ctx, 'Open the Book.', 620);
-  drawCentered(ctx, 'See the story.', 710);
-  drawCentered(ctx, 'Meet Jesus.', 800);
+  ctx.font = 'italic 700 64px "Libre Baskerville", Georgia, serif';
+  drawCentered(ctx, 'Welcome', 560);
+  ctx.font = '40px "Libre Baskerville", Georgia, serif';
+  ctx.fillStyle = '#3b2618';
+  drawCentered(ctx, 'The Holy Bible', 680);
+  drawCentered(ctx, 'is open on the desk.', 750);
   ctx.fillStyle = '#c4a35a';
-  ctx.fillRect(PAGE_W / 2 - 70, 880, 140, 2);
-  ctx.font = '28px "Libre Baskerville", Georgia, serif';
+  ctx.fillRect(PAGE_W / 2 - 70, 820, 140, 2);
+  ctx.font = 'italic 32px "Libre Baskerville", Georgia, serif';
   ctx.fillStyle = '#6e5336';
-  drawCentered(ctx, 'Christian', 960);
+  drawCentered(ctx, 'Turn the page to begin.', 900);
 }
 
 function drawTitle(ctx: CanvasRenderingContext2D) {
@@ -413,9 +417,9 @@ function drawTitle(ctx: CanvasRenderingContext2D) {
   drawCentered(ctx, 'Bible', 750);
   ctx.font = 'italic 30px "Libre Baskerville", Georgia, serif';
   ctx.fillStyle = '#6b5e52';
-  drawCentered(ctx, 'Containing the Old and New Testaments', 880);
+  drawCentered(ctx, 'The Old and New Testaments', 880);
   ctx.font = '26px "Libre Baskerville", Georgia, serif';
-  drawCentered(ctx, 'Public Domain', 980);
+  drawCentered(ctx, 'Public domain', 980);
   ctx.font = 'italic 24px "Libre Baskerville", Georgia, serif';
   ctx.fillStyle = '#8a6230';
   drawCentered(ctx, 'Open the Book. See the story. Meet Jesus.', 1120);
@@ -427,15 +431,14 @@ function drawColophon(ctx: CanvasRenderingContext2D) {
   ctx.fillRect(PAGE_W / 2 - 70, 560, 140, 2);
   ctx.fillStyle = '#5c3d2e';
   ctx.font = 'italic 42px "Libre Baskerville", Georgia, serif';
-  drawCentered(ctx, 'Here ends', 680);
-  drawCentered(ctx, 'the reading.', 760);
+  drawCentered(ctx, 'The end of the Bible', 700);
   ctx.font = 'italic 32px "Libre Baskerville", Georgia, serif';
   ctx.fillStyle = '#8a6230';
-  drawCentered(ctx, 'Soli Deo gloria', 900);
+  drawCentered(ctx, 'Glory to God alone.', 820);
   ctx.font = '24px "Libre Baskerville", Georgia, serif';
   ctx.fillStyle = '#6b5e52';
-  drawCentered(ctx, 'World English Bible', 1040);
-  drawCentered(ctx, 'Public Domain', 1084);
+  drawCentered(ctx, 'World English Bible', 980);
+  drawCentered(ctx, 'Public domain', 1024);
 }
 
 function drawScripture(ctx: CanvasRenderingContext2D, page: LaidPage) {
@@ -469,7 +472,7 @@ function drawScripture(ctx: CanvasRenderingContext2D, page: LaidPage) {
     }
 
     ctx.font = BODY_FONT;
-    ctx.fillStyle = '#1c140f';
+    ctx.fillStyle = '#140e0a';
     ctx.fillText(line.text, MARGIN_X + NUM_COL, y);
   });
 
@@ -505,13 +508,13 @@ export function drawPage(ctx: CanvasRenderingContext2D, page: LaidPage | null) {
 export function pagePlainText(page: LaidPage | null): string {
   if (!page) return '';
   if (page.kind === 'frontispiece') {
-    return 'Open the Book. See the story. Meet Jesus. Christian.';
+    return 'Welcome. The Holy Bible is open on the desk. Turn the page to begin.';
   }
   if (page.kind === 'title') {
-    return 'The Holy Bible. World English Bible. Public Domain. Containing the Old and New Testaments.';
+    return 'The Holy Bible. World English Bible. The Old and New Testaments. Public domain.';
   }
   if (page.kind === 'colophon') {
-    return 'Here ends the reading. Soli Deo gloria. World English Bible. Public Domain.';
+    return 'The end of the Bible. Glory to God alone. World English Bible. Public domain.';
   }
   const parts: string[] = [];
   for (const line of page.lines) {
@@ -527,16 +530,44 @@ export function pagePlainText(page: LaidPage | null): string {
 }
 
 export function describeSpread(left: LaidPage | null, right: LaidPage | null): string {
-  const label = (page: LaidPage | null) => {
-    if (!page) return null;
-    if (page.kind === 'frontispiece') return 'Open the Book';
-    if (page.kind === 'title') return 'Holy Bible';
-    if (page.kind === 'colophon') return 'End';
-    if (page.headerRight) return `${page.headerLeft} ${page.headerRight}`;
-    return page.headerLeft;
-  };
-  const a = label(left);
-  const b = label(right);
-  if (a && b && a !== b) return `${a}  ·  ${b}`;
-  return a || b || 'Holy Bible';
+  const chapters = chaptersOnSpread(left, right);
+  if (chapters.length === 0) {
+    const names = [left, right].map((page) => {
+      if (!page) return null;
+      if (page.kind === 'frontispiece') return 'Welcome';
+      if (page.kind === 'title') return 'Title page';
+      if (page.kind === 'colophon') return 'The end';
+      return null;
+    });
+    const unique = names.filter((name, index) => name && names.indexOf(name) === index);
+    return unique.join(' · ') || 'Holy Bible';
+  }
+
+  const parts: string[] = [];
+  let index = 0;
+  while (index < chapters.length) {
+    const start = chapters[index];
+    let end = start.chapter;
+    let next = index + 1;
+    while (
+      next < chapters.length &&
+      chapters[next].bookId === start.bookId &&
+      chapters[next].chapter === end + 1
+    ) {
+      end = chapters[next].chapter;
+      next += 1;
+    }
+    parts.push(end === start.chapter ? `${start.book} ${start.chapter}` : `${start.book} ${start.chapter}–${end}`);
+    index = next;
+  }
+  return parts.join(' · ');
+}
+
+/** Leaf numbers for the open spread, counted the way a printed Bible counts pages. */
+export function spreadPageLabel(spread: number, pageCount: number): string {
+  const start = spread * 2 + 1;
+  const end = Math.min(pageCount, start + 1);
+  const total = pageCount.toLocaleString();
+  if (start >= end) return `Page ${start.toLocaleString()} of ${total}`;
+  return `Pages ${start.toLocaleString()}–${end.toLocaleString()} of ${total}`;
 }

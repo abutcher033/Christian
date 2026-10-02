@@ -12,24 +12,29 @@ export function MediaPanel({ entry }: Props) {
   const media = entry.media;
   const [failed, setFailed] = useState(false);
 
-  if (!media) {
-    return (
-      <div className="media-frame" role="status">
-        <strong>Scripture first</strong>
-        <span>Read the passage, then return when a study note is enough.</span>
-      </div>
-    );
-  }
+  if (!media) return null;
 
   if (media.type === 'video') {
     return (
       <figure>
         <div className="media-frame">
-          <video controls playsInline poster={media.poster} style={{ width: '100%' }} aria-label={media.caption}>
-            <source src={media.src} type="video/mp4" />
-            Video placeholder — the cut is not loaded yet.
-          </video>
-          <span>Video placeholder</span>
+          {!failed ? (
+            <video
+              controls
+              playsInline
+              poster={media.poster}
+              style={{ width: '100%' }}
+              aria-label={media.caption}
+              onError={() => setFailed(true)}
+            >
+              <source src={media.src} type="video/mp4" />
+            </video>
+          ) : (
+            <>
+              <strong>No film yet</strong>
+              <span>A short film for this passage is not ready. The note above is the study.</span>
+            </>
+          )}
         </div>
         <figcaption className="media-caption">{media.caption}</figcaption>
       </figure>

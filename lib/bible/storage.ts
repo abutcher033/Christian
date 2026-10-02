@@ -1,3 +1,5 @@
+import type { ReadingDistance, StudySceneId } from '@/lib/study/scenes';
+import { isReadingDistance, isStudyScene } from '@/lib/study/scenes';
 import type { Place } from './types';
 
 const PLACE_KEY = 'christian.place';
@@ -11,12 +13,22 @@ export type ReaderSettings = {
   scriptureFirst: boolean;
   largeTargets: boolean;
   reducedMotion: boolean;
+  scene: StudySceneId;
+  soundOn: boolean;
+  volume: number;
+  readingDistance: ReadingDistance;
+  hintSeen: boolean;
 };
 
 export const DEFAULT_SETTINGS: ReaderSettings = {
   scriptureFirst: true,
   largeTargets: true,
   reducedMotion: false,
+  scene: 'hearth',
+  soundOn: true,
+  volume: 0.72,
+  readingDistance: 'cozy',
+  hintSeen: false,
 };
 
 export function loadPlace(): SavedPlace | null {
@@ -51,10 +63,18 @@ export function loadSettings(): ReaderSettings {
     const raw = window.localStorage.getItem(SETTINGS_KEY);
     if (!raw) return DEFAULT_SETTINGS;
     const parsed = JSON.parse(raw) as Partial<ReaderSettings>;
+    const volume = typeof parsed.volume === 'number' ? parsed.volume : DEFAULT_SETTINGS.volume;
     return {
       scriptureFirst: parsed.scriptureFirst !== false,
       largeTargets: parsed.largeTargets !== false,
       reducedMotion: parsed.reducedMotion === true,
+      scene: isStudyScene(parsed.scene) ? parsed.scene : DEFAULT_SETTINGS.scene,
+      soundOn: parsed.soundOn !== false,
+      volume: Math.min(1, Math.max(0, volume)),
+      readingDistance: isReadingDistance(parsed.readingDistance)
+        ? parsed.readingDistance
+        : DEFAULT_SETTINGS.readingDistance,
+      hintSeen: parsed.hintSeen === true,
     };
   } catch {
     return DEFAULT_SETTINGS;

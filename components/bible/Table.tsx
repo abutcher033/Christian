@@ -14,11 +14,6 @@ export function Table() {
 
   return (
     <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.92, 0]} receiveShadow>
-        <planeGeometry args={[18, 12]} />
-        <meshStandardMaterial color="#120d0a" roughness={1} />
-      </mesh>
-
       <mesh position={[0, -0.02, 0]} receiveShadow castShadow>
         <boxGeometry args={[3.7, 0.1, 2.15]} />
         <meshStandardMaterial map={wood} roughness={0.78} metalness={0.04} color="#c49262" />

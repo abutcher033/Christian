@@ -3,8 +3,8 @@
 import { useSettings } from './SettingsProvider';
 
 /**
- * Scripture version is World English Bible for v1.
- * NKJV is named as a future preference only — its text is not included.
+ * The pages are the World English Bible.
+ * NKJV is named only as a future preference — its text is not included.
  */
 export function SettingsPanel() {
   const { settings, update } = useSettings();
@@ -13,21 +13,21 @@ export function SettingsPanel() {
     <div className="settings-page">
       <h1>Settings</h1>
       <p className="settings-note">
-        <em>Open the Book. See the story. Meet Jesus.</em> Read the passage before the study notes.
-        Family-safe. Christ-centered.
+        You are reading the World English Bible. Study notes sit beside the passage. They do not
+        replace it.
       </p>
 
-      <label htmlFor="version">Scripture version</label>
+      <label htmlFor="version">Translation</label>
       <select id="version" value="web" name="version" onChange={() => undefined}>
-        <option value="web">World English Bible (WEB) — full text</option>
+        <option value="web">World English Bible — the text on the pages</option>
         <option value="nkjv" disabled>
-          NKJV (preferred later — license pending)
+          New King James Version — not in this copy
         </option>
       </select>
       <p className="settings-note">
-        This reader ships the World English Bible, which is in the public domain. NKJV is the
-        preferred translation for a later release once a license is in place. NKJV text is not
-        included. “World English Bible” is a trademark of eBible.org.
+        These pages are the World English Bible, a public-domain translation from eBible.org. A
+        New King James Version edition needs a license, so it is not here yet. “World English
+        Bible” is a trademark of eBible.org.
       </p>
 
       <label className="check-row">
@@ -37,7 +37,7 @@ export function SettingsPanel() {
           name="scriptureFirst"
           onChange={(event) => update({ scriptureFirst: event.target.checked })}
         />
-        Scripture-first mode (show the passage before study notes)
+        Show the passage above the notes
       </label>
 
       <label className="check-row">
@@ -47,7 +47,7 @@ export function SettingsPanel() {
           name="largeTaps"
           onChange={(event) => update({ largeTargets: event.target.checked })}
         />
-        Large tap targets
+        Larger buttons
       </label>
 
       <label className="check-row">
@@ -57,12 +57,14 @@ export function SettingsPanel() {
           name="reducedMotion"
           onChange={(event) => update({ reducedMotion: event.target.checked })}
         />
-        Reduce page-turn motion
+        Turn pages instantly
       </label>
 
       <p className="settings-note">
-        Your place in the book is remembered on this device. Arrow keys turn the page. Shift plus
-        an arrow key jumps a chapter. Swipe the book, or tap a page.
+        On the reading page, choose By the fire, Morning, Rain, or Night. Sound plays after your
+        first click. Your place is saved in this browser. The right arrow turns forward. The left
+        arrow turns back. Hold Shift and an arrow to change chapter. You can also drag a page
+        across the middle of the book. Press F to hide the menus. Press M to turn sound off or on.
       </p>
     </div>
   );

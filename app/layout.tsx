@@ -4,9 +4,9 @@ import { SettingsProvider } from '@/components/settings/SettingsProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Christian — Open the Book. See the story. Meet Jesus.',
+  title: 'Christian — Read the Bible',
   description:
-    'An evangelical interactive 3D study Bible. Read the World English Bible as a book on a table.',
+    'Read the World English Bible as a book on a desk, in a quiet study.',
 };
 
 export const viewport: Viewport = {
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <header className="app-header">
               <div>
                 <h1>Christian</h1>
-                <p className="promise">Open the Book. See the story. Meet Jesus.</p>
+                <p className="promise">Read the Bible, one page at a time.</p>
               </div>
               <nav aria-label="Main">
                 <Link href="/">Bible</Link>
