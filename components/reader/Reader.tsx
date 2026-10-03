@@ -210,6 +210,7 @@ export function Reader() {
       ) {
         return;
       }
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (event.key === 'Escape') {
         setPickerOpen(false);
         setOverlayOpen(false);
@@ -237,8 +238,8 @@ export function Reader() {
         else requestTurn('prev');
       }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
   }, [blocked, requestTurn, settings.soundOn, stepChapter, update]);
 
   useEffect(() => {
@@ -337,12 +338,10 @@ export function Reader() {
         scene={settings.scene}
         soundOn={settings.soundOn}
         volume={settings.volume}
-        distance={settings.readingDistance}
         focus={focus}
         onScene={(scene) => update({ scene })}
         onSound={(soundOn) => update({ soundOn })}
         onVolume={(volume) => update({ volume })}
-        onDistance={(readingDistance) => update({ readingDistance })}
         onFocus={setFocus}
       />
 
@@ -357,7 +356,6 @@ export function Reader() {
         gestureRef={gestureRef}
         onTurning={setTurning}
         scene={settings.scene}
-        readingDistance={settings.readingDistance}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
       />

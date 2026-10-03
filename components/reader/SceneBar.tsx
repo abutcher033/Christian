@@ -1,17 +1,15 @@
 'use client';
 
-import { DISTANCE_LABEL, SCENES, type ReadingDistance, type StudySceneId } from '@/lib/study/scenes';
+import { SCENES, type StudySceneId } from '@/lib/study/scenes';
 
 type Props = {
   scene: StudySceneId;
   soundOn: boolean;
   volume: number;
-  distance: ReadingDistance;
   focus: boolean;
   onScene: (scene: StudySceneId) => void;
   onSound: (on: boolean) => void;
   onVolume: (volume: number) => void;
-  onDistance: (distance: ReadingDistance) => void;
   onFocus: (focus: boolean) => void;
 };
 
@@ -19,12 +17,10 @@ export function SceneBar({
   scene,
   soundOn,
   volume,
-  distance,
   focus,
   onScene,
   onSound,
   onVolume,
-  onDistance,
   onFocus,
 }: Props) {
   const current = SCENES.find((item) => item.id === scene) ?? SCENES[0];
@@ -53,20 +49,6 @@ export function SceneBar({
       </div>
       <p className="scene-note">{current.description}</p>
       <div className="scene-bar-row">
-        <div className="scene-choices" role="radiogroup" aria-label="Type size">
-          {(Object.keys(DISTANCE_LABEL) as ReadingDistance[]).map((key) => (
-            <button
-              key={key}
-              type="button"
-              role="radio"
-              aria-checked={distance === key}
-              className={distance === key ? 'is-on' : undefined}
-              onClick={() => onDistance(key)}
-            >
-              {DISTANCE_LABEL[key]} type
-            </button>
-          ))}
-        </div>
         <button type="button" className="scene-quiet" aria-pressed={soundOn} onClick={() => onSound(!soundOn)}>
           {soundOn ? 'Sound on' : 'Sound off'}
         </button>

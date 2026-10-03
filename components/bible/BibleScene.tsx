@@ -1,12 +1,10 @@
 'use client';
 
-import { ContactShadows } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { Bloom, EffectComposer, SMAA, Vignette } from '@react-three/postprocessing';
 import { Suspense, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefObject } from 'react';
 import * as THREE from 'three';
 import type { LaidPage } from '@/lib/bible/pages';
-import type { ReadingDistance, StudySceneId } from '@/lib/study/scenes';
+import type { StudySceneId } from '@/lib/study/scenes';
 import { sceneById } from '@/lib/study/scenes';
 import { BibleBook, type BibleBookHandle } from './BibleBook';
 import { CameraRig } from './CameraRig';
@@ -24,7 +22,6 @@ type Props = {
   gestureRef: MutableRefObject<boolean>;
   onTurning: (active: boolean) => void;
   scene: StudySceneId;
-  readingDistance: ReadingDistance;
   onPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void;
   onPointerUp: (event: ReactPointerEvent<HTMLDivElement>) => void;
 };
@@ -40,7 +37,6 @@ export function BibleScene({
   gestureRef,
   onTurning,
   scene,
-  readingDistance,
   onPointerDown,
   onPointerUp,
 }: Props) {
@@ -53,18 +49,18 @@ export function BibleScene({
       onPointerUp={onPointerUp}
     >
       <Canvas
-        shadows
         dpr={[1, 2]}
-        camera={{ position: [0, 2.2, 0.5], fov: 34, near: 0.1, far: 40 }}
+        camera={{ position: [0, 2.4, 0.35], fov: 22, near: 0.05, far: 40 }}
         gl={{
           antialias: true,
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.08,
+          powerPreference: 'high-performance',
+          toneMapping: THREE.NoToneMapping,
+          outputColorSpace: THREE.SRGBColorSpace,
         }}
         aria-label="An open Bible on a desk in a study"
       >
         <Suspense fallback={null}>
-          <CameraRig distance={readingDistance} />
+          <CameraRig />
           <StudyRoom scene={preset} />
           <Table />
           <BibleBook
@@ -78,19 +74,6 @@ export function BibleScene({
             gestureRef={gestureRef}
             onTurning={onTurning}
           />
-          <ContactShadows
-            position={[0, 0.04, 0]}
-            opacity={0.38}
-            scale={8}
-            blur={2.6}
-            far={1.8}
-            resolution={512}
-          />
-          <EffectComposer multisampling={0} enableNormalPass={false}>
-            <SMAA />
-            <Bloom luminanceThreshold={0.92} mipmapBlur intensity={0.18} />
-            <Vignette eskil={false} offset={0.22} darkness={0.42} />
-          </EffectComposer>
         </Suspense>
       </Canvas>
     </div>

@@ -81,7 +81,7 @@ function Sheet({
       }}
     >
       <planeGeometry args={[SHEET_W, SHEET_H]} />
-      <meshStandardMaterial map={tex} roughness={0.78} metalness={0} />
+      <meshBasicMaterial map={tex} toneMapped={false} />
     </mesh>
   );
 }
@@ -122,10 +122,10 @@ function TurningSheet({
     if (shadow.current && shadowMaterial) {
       const travel = Math.min(1, Math.max(0, progress));
       const strength = Math.sin(travel * Math.PI);
-      const edge = Math.cos(travel * Math.PI) * SHEET_W;
-      shadowMaterial.opacity = 0.26 * strength;
-      shadow.current.position.x = (dir === 'next' ? 1 : -1) * edge * 0.42;
-      shadow.current.scale.x = 0.35 + strength * 0.85;
+      const fold = SHEET_W * (1 - travel);
+      shadowMaterial.opacity = 0.2 * strength;
+      shadow.current.position.x = (dir === 'next' ? 1 : -1) * (fold - 0.08);
+      shadow.current.scale.x = 0.28 + strength * 0.45;
     }
   });
 
@@ -136,10 +136,10 @@ function TurningSheet({
         rotation={[-Math.PI / 2, 0, 0]}
         position={[dir === 'next' ? -0.25 : 0.25, -0.012, 0]}
       >
-        <planeGeometry args={[SHEET_W, SHEET_H * 0.92]} />
+        <planeGeometry args={[0.42, SHEET_H * 0.96]} />
         <meshBasicMaterial color="#1a100c" transparent opacity={0} depthWrite={false} />
       </mesh>
-      <mesh geometry={geo} material={material} castShadow />
+      <mesh geometry={geo} material={material} frustumCulled={false} />
     </group>
   );
 }
@@ -229,7 +229,7 @@ export const BibleBook = forwardRef<BibleBookHandle, Props>(function BibleBook(
       return;
     }
     const distance = Math.abs(to - from);
-    const duration = from === 0 && to === 1 ? 1.05 : Math.max(0.32, distance * 0.85);
+    const duration = from === 0 && to === 1 ? 0.48 : Math.max(0.16, distance * 0.34);
     animRef.current = { dir, from, to, start: -1, duration, commit };
     progressRef.current = from;
     const current = curlRef.current;

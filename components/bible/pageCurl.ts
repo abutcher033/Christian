@@ -1,85 +1,85 @@
 import * as THREE from 'three';
 import { SHEET_W } from './metrics';
 
-/** Starts moving at once, then eases onto the stack. */
+/** The page moves at once, then settles like a sheet landing. */
 export function easePage(amount: number): number {
   const t = Math.min(1, Math.max(0, amount));
-  return sampleBezier(t, 0.16, 0.72, 0.2, 1);
+  return 1 - Math.pow(1 - t, 2.15);
 }
 
-function sampleBezier(t: number, x1: number, y1: number, x2: number, y2: number): number {
-  let u = t;
-  for (let i = 0; i < 6; i += 1) {
-    const x = bezier(u, x1, x2);
-    const dx = bezierDeriv(u, x1, x2);
-    if (Math.abs(dx) < 1e-4) break;
-    u = Math.min(1, Math.max(0, u - (x - t) / dx));
-  }
-  return bezier(u, y1, y2);
-}
-
-function bezier(t: number, c1: number, c2: number): number {
-  const mt = 1 - t;
-  return 3 * mt * mt * t * c1 + 3 * mt * t * t * c2 + t * t * t;
-}
-
-function bezierDeriv(t: number, c1: number, c2: number): number {
-  const mt = 1 - t;
-  return 3 * mt * mt * c1 + 6 * mt * t * (c2 - c1) + 3 * t * t * (1 - c2);
+function smooth(amount: number): number {
+  const u = Math.min(1, Math.max(0, amount));
+  return u * u * (3 - 2 * u);
 }
 
 /** A flat sheet. x = 0 is the spine, x = width is the outer edge. */
 export function createLeaf(width: number, height: number) {
-  const geo = new THREE.PlaneGeometry(width, height, 72, 10);
+  const geo = new THREE.PlaneGeometry(width, height, 80, 3);
   geo.rotateX(-Math.PI / 2);
   geo.translate(width / 2, 0, 0);
   geo.userData.base = Float32Array.from(geo.attributes.position.array);
+  geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0.15, 0), width + height);
   return geo;
 }
 
 /**
- * Bend the sheet around the spine.
- * The outer edge leads, so the page curves instead of flipping edge-on all at once.
- * At the end every point has swung from x = s to x = -s and lies flat.
- * `dir` mirrors that swing for a backward turn.
+ * Roll the sheet from the outer edge toward the spine.
+ * A narrow curl travels across the page; the paper that has passed the curl
+ * lies flat again, so the turn reads as a page and not a flipping card.
  */
 export function curlSheet(geo: THREE.BufferGeometry, progress: number, dir: 'next' | 'prev') {
   const pos = geo.attributes.position as THREE.BufferAttribute;
-  const normal = geo.attributes.normal as THREE.BufferAttribute;
   const base = geo.userData.base as Float32Array;
   const width = SHEET_W;
   const t = Math.min(1, Math.max(0, progress));
   const sign = dir === 'next' ? 1 : -1;
-  const edge = Math.PI * t;
-  const bend = Math.sin(Math.PI * t);
 
   for (let i = 0; i < pos.count; i += 1) {
     const s = base[i * 3];
     const z = base[i * 3 + 2];
-    const across = s / width;
-    const shaped = Math.pow(across, 0.58);
-    const angle = edge * (1 - bend * (1 - shaped));
-    const lift = Math.sin(angle);
-    const nx = Math.cos(angle) * s * sign;
-    const ny = lift * s + Math.sin(across * Math.PI) * bend * 0.035;
-    pos.setXYZ(i, nx, ny + 0.004, z);
-    normal.setXYZ(i, -Math.sin(angle) * sign, Math.cos(angle), 0);
+    let x = s;
+    let y = 0.004;
+
+    if (t > 0.001 && t < 0.999) {
+      const radius = 0.11 * Math.sin(Math.PI * t);
+      const fold = width * (1 - t);
+      if (s > fold) {
+        const arc = s - fold;
+        const half = Math.PI * Math.max(radius, 1e-4);
+        if (arc <= half) {
+          const angle = arc / Math.max(radius, 1e-4);
+          x = fold - radius * Math.sin(angle);
+          y = radius * (1 - Math.cos(angle)) + 0.004;
+        } else {
+          const extra = arc - half;
+          const settled = smooth(Math.min(1, extra / 0.16));
+          y = 2 * radius * (1 - settled) + 0.005 * settled;
+          x = fold - extra;
+        }
+        const land = smooth(Math.min(1, Math.max(0, (t - 0.84) / 0.16)));
+        const done = Math.min(1, arc / (half + 0.35));
+        const weight = land * done;
+        x += (-s - x) * weight;
+        y += (0.004 - y) * weight;
+      }
+    } else if (t >= 0.999) {
+      x = -s;
+    }
+
+    pos.setXYZ(i, x * sign, y, z);
   }
   pos.needsUpdate = true;
-  normal.needsUpdate = true;
-  geo.computeBoundingSphere();
 }
 
 export function createPageMaterial(front: THREE.Texture, back: THREE.Texture, dir: 'next' | 'prev') {
-  const material = new THREE.MeshStandardMaterial({
+  const material = new THREE.MeshBasicMaterial({
     map: front,
-    roughness: 0.82,
-    metalness: 0,
     side: THREE.DoubleSide,
+    toneMapped: false,
   });
   material.polygonOffset = true;
-  material.polygonOffsetFactor = -1;
-  material.polygonOffsetUnits = -1;
+  material.polygonOffsetFactor = -2;
+  material.polygonOffsetUnits = -2;
   material.customProgramCacheKey = () => `bible-page-${dir}`;
   material.onBeforeCompile = (shader) => {
     shader.uniforms.backMap = { value: back };

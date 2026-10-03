@@ -1,5 +1,5 @@
 /** Open-book sheet size in world units. Matches the page texture aspect (1200×1700). */
 export const SHEET_W = 1.16;
 export const SHEET_H = SHEET_W * (1700 / 1200);
-/** Raises the far edge so the open pages face a camera looking down on them. */
-export const BOOK_TILT = 0.12;
+/** A slight tip so the page faces the reader without shrinking the far lines. */
+export const BOOK_TILT = 0.045;

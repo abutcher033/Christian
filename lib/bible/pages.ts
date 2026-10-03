@@ -4,18 +4,18 @@ export const PAGE_W = 1200;
 export const PAGE_H = 1700;
 /** Backing-store scale. Layout stays in PAGE_W × PAGE_H so page breaks do not move. */
 export const PAGE_SCALE = 2;
-export const MARGIN_X = 86;
-export const BODY_TOP = 172;
-export const LINE_H = 52;
-export const BODY_BOTTOM = 1588;
+export const MARGIN_X = 78;
+export const BODY_TOP = 168;
+export const LINE_H = 62;
+export const BODY_BOTTOM = 1604;
 export const MAX_LINES = Math.floor((BODY_BOTTOM - BODY_TOP) / LINE_H);
 /** Left column reserved for verse numbers, so every line of a verse shares one measure. */
-export const NUM_COL = 78;
+export const NUM_COL = 72;
 
-const BODY_FONT = '36px "Libre Baskerville", Georgia, serif';
-const NUM_FONT = '700 22px "Libre Baskerville", Georgia, serif';
-const HEADER_FONT = '700 26px "Libre Baskerville", Georgia, serif';
-const CHAPTER_FONT = 'italic 700 34px "Libre Baskerville", Georgia, serif';
+const BODY_FONT = '44px "Libre Baskerville", Georgia, serif';
+const NUM_FONT = '700 24px "Libre Baskerville", Georgia, serif';
+const HEADER_FONT = '700 28px "Libre Baskerville", Georgia, serif';
+const CHAPTER_FONT = 'italic 700 36px "Libre Baskerville", Georgia, serif';
 
 export type VerseLine = {
   kind: 'verse';
@@ -345,40 +345,42 @@ export function spreadAnchor(left: LaidPage | null, right: LaidPage | null): Pla
   return left?.anchor ?? right?.anchor ?? null;
 }
 
-function paintPaper(ctx: CanvasRenderingContext2D) {
-  const wash = ctx.createLinearGradient(0, 0, PAGE_W, PAGE_H);
-  wash.addColorStop(0, '#fbf7f0');
-  wash.addColorStop(0.55, '#f6f0e4');
-  wash.addColorStop(1, '#efe4d2');
-  ctx.fillStyle = wash;
+function paintPaper(ctx: CanvasRenderingContext2D, spine: 'left' | 'right') {
+  ctx.fillStyle = '#f6f1e6';
   ctx.fillRect(0, 0, PAGE_W, PAGE_H);
 
-  const glow = ctx.createRadialGradient(
-    PAGE_W * 0.5,
-    PAGE_H * 0.42,
-    PAGE_W * 0.1,
-    PAGE_W * 0.5,
-    PAGE_H * 0.5,
-    PAGE_W * 0.78,
-  );
-  glow.addColorStop(0, 'rgba(255, 252, 245, 0.45)');
-  glow.addColorStop(1, 'rgba(120, 84, 48, 0.035)');
-  ctx.fillStyle = glow;
+  const tooth = ctx.createLinearGradient(0, 0, PAGE_W, PAGE_H);
+  tooth.addColorStop(0, 'rgba(255, 252, 246, 0.55)');
+  tooth.addColorStop(1, 'rgba(214, 196, 168, 0.16)');
+  ctx.fillStyle = tooth;
   ctx.fillRect(0, 0, PAGE_W, PAGE_H);
 
   ctx.save();
-  for (let i = 0; i < 420; i += 1) {
-    const x = Math.random() * PAGE_W;
-    const y = Math.random() * PAGE_H;
-    ctx.globalAlpha = Math.random() * 0.03;
-    ctx.fillStyle = Math.random() > 0.5 ? '#8a6844' : '#fffaf2';
-    ctx.fillRect(x, y, 1, 0.6);
+  ctx.globalAlpha = 0.045;
+  let seed = spine === 'left' ? 19 : 47;
+  for (let i = 0; i < 900; i += 1) {
+    seed = (seed * 16807 + 13) % 2147483647;
+    const x = (seed % PAGE_W);
+    seed = (seed * 16807 + 13) % 2147483647;
+    const y = seed % PAGE_H;
+    ctx.fillStyle = i % 4 === 0 ? '#b89a74' : '#fffdf8';
+    ctx.fillRect(x, y, 1.4, 1.4);
   }
   ctx.restore();
 
-  ctx.strokeStyle = 'rgba(140, 104, 62, 0.28)';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(34, 34, PAGE_W - 68, PAGE_H - 68);
+  const gutter = ctx.createLinearGradient(spine === 'left' ? 0 : PAGE_W, 0, spine === 'left' ? 110 : PAGE_W - 110, 0);
+  gutter.addColorStop(0, 'rgba(92, 64, 38, 0.13)');
+  gutter.addColorStop(1, 'rgba(92, 64, 38, 0)');
+  ctx.fillStyle = gutter;
+  ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+
+  const edge = ctx.createLinearGradient(0, 0, 0, PAGE_H);
+  edge.addColorStop(0, 'rgba(120, 90, 58, 0.05)');
+  edge.addColorStop(0.04, 'rgba(120, 90, 58, 0)');
+  edge.addColorStop(0.96, 'rgba(120, 90, 58, 0)');
+  edge.addColorStop(1, 'rgba(120, 90, 58, 0.06)');
+  ctx.fillStyle = edge;
+  ctx.fillRect(0, 0, PAGE_W, PAGE_H);
 }
 
 function drawCentered(ctx: CanvasRenderingContext2D, text: string, y: number) {
@@ -387,7 +389,7 @@ function drawCentered(ctx: CanvasRenderingContext2D, text: string, y: number) {
 }
 
 function drawFrontispiece(ctx: CanvasRenderingContext2D) {
-  paintPaper(ctx);
+  paintPaper(ctx, 'right');
   ctx.fillStyle = '#c4a35a';
   ctx.fillRect(PAGE_W / 2 - 70, 430, 140, 2);
   ctx.fillStyle = '#5c3d2e';
@@ -405,7 +407,7 @@ function drawFrontispiece(ctx: CanvasRenderingContext2D) {
 }
 
 function drawTitle(ctx: CanvasRenderingContext2D) {
-  paintPaper(ctx);
+  paintPaper(ctx, 'left');
   ctx.fillStyle = '#8a6230';
   ctx.font = '700 28px "Libre Baskerville", Georgia, serif';
   drawCentered(ctx, 'THE HOLY BIBLE', 500);
@@ -425,8 +427,8 @@ function drawTitle(ctx: CanvasRenderingContext2D) {
   drawCentered(ctx, 'Open the Book. See the story. Meet Jesus.', 1120);
 }
 
-function drawColophon(ctx: CanvasRenderingContext2D) {
-  paintPaper(ctx);
+function drawColophon(ctx: CanvasRenderingContext2D, page: LaidPage) {
+  paintPaper(ctx, page.index % 2 === 0 ? 'right' : 'left');
   ctx.fillStyle = '#c4a35a';
   ctx.fillRect(PAGE_W / 2 - 70, 560, 140, 2);
   ctx.fillStyle = '#5c3d2e';
@@ -442,7 +444,7 @@ function drawColophon(ctx: CanvasRenderingContext2D) {
 }
 
 function drawScripture(ctx: CanvasRenderingContext2D, page: LaidPage) {
-  paintPaper(ctx);
+  paintPaper(ctx, page.index % 2 === 0 ? 'right' : 'left');
   ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = '#6e5336';
   ctx.font = HEADER_FONT;
@@ -472,7 +474,7 @@ function drawScripture(ctx: CanvasRenderingContext2D, page: LaidPage) {
     }
 
     ctx.font = BODY_FONT;
-    ctx.fillStyle = '#140e0a';
+    ctx.fillStyle = '#1a120c';
     ctx.fillText(line.text, MARGIN_X + NUM_COL, y);
   });
 
@@ -486,7 +488,7 @@ export function drawPage(ctx: CanvasRenderingContext2D, page: LaidPage | null) {
   ctx.clearRect(0, 0, PAGE_W, PAGE_H);
   ctx.textBaseline = 'alphabetic';
   if (!page) {
-    paintPaper(ctx);
+    paintPaper(ctx, 'left');
     return;
   }
   if (page.kind === 'frontispiece') {
@@ -498,7 +500,7 @@ export function drawPage(ctx: CanvasRenderingContext2D, page: LaidPage | null) {
     return;
   }
   if (page.kind === 'colophon') {
-    drawColophon(ctx);
+    drawColophon(ctx, page);
     return;
   }
   drawScripture(ctx, page);

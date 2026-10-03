@@ -22,7 +22,7 @@ function bake(page: LaidPage | null): THREE.CanvasTexture {
   tex.generateMipmaps = false;
   tex.minFilter = THREE.LinearFilter;
   tex.magFilter = THREE.LinearFilter;
-  tex.anisotropy = 16;
+  tex.anisotropy = 8;
   tex.needsUpdate = true;
   return tex;
 }
