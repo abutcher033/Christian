@@ -5,7 +5,9 @@ import type { BibleBookHandle } from '@/components/bible/BibleBook';
 import { BibleScene } from '@/components/bible/BibleScene';
 import { BookPicker } from '@/components/bible/BookPicker';
 import { PageTurnControls } from '@/components/bible/PageTurnControls';
+import { PhoneReader } from '@/components/reader/PhoneReader';
 import { SceneBar } from '@/components/reader/SceneBar';
+import { useIsPhone } from '@/components/reader/useIsPhone';
 import { useSettings } from '@/components/settings/SettingsProvider';
 import { StudyOverlay } from '@/components/study/StudyOverlay';
 import { getEntriesForChapters, type StudyEntry } from '@/data/studyContent';
@@ -50,6 +52,7 @@ function usePrefersReducedMotion() {
 }
 
 export function Reader() {
+  const phone = useIsPhone();
   const { settings, update } = useSettings();
   const osReduced = usePrefersReducedMotion();
   const reduced = settings.reducedMotion || osReduced;
@@ -79,41 +82,9 @@ export function Reader() {
         setStatus('Opening the Bible…');
         const loaded = await loadBible();
         if (cancel) return;
-        setCorpus(loaded);
-        setProgress(0.08);
-        setStatus('Laying out every page…');
         await loadBibleFonts();
         if (cancel) return;
-        setStatus('Finding your place…');
-        const job = createPaginator(loaded);
-        const step = () => {
-          if (cancel) return;
-          const result = job.work(14);
-          setProgress(0.1 + result.progress * 0.9);
-          if (!result.done || !result.pages) {
-            requestAnimationFrame(step);
-            return;
-          }
-          const laid = countStartedVerses(result.pages);
-          const real = countRealVerses(loaded);
-          if (laid !== real) {
-            setError(`The page layout is missing verses (${laid.toLocaleString()} of ${real.toLocaleString()}).`);
-            return;
-          }
-          const saved = loadPlace();
-          let initial = Math.floor(
-            findPageIndex(result.pages, { bookId: 'GEN', chapter: 1, verse: 1 }) / 2,
-          );
-          if (saved?.kind === 'front') initial = 0;
-          if (saved?.kind === 'ref') {
-            initial = Math.floor(findPageIndex(result.pages, saved) / 2);
-          }
-          setPages(result.pages);
-          setSpread(initial);
-          setProgress(1);
-          readyRef.current = true;
-        };
-        requestAnimationFrame(step);
+        setCorpus(loaded);
       } catch (err) {
         if (!cancel) setError(err instanceof Error ? err.message : 'Could not open the Bible.');
       }
@@ -123,6 +94,45 @@ export function Reader() {
       cancel = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (phone !== false || !corpus) return;
+    let cancel = false;
+    setStatus('Laying out every page…');
+    setProgress(0.08);
+    const job = createPaginator(corpus);
+    const step = () => {
+      if (cancel) return;
+      const result = job.work(14);
+      setProgress(0.1 + result.progress * 0.9);
+      if (!result.done || !result.pages) {
+        requestAnimationFrame(step);
+        return;
+      }
+      const laid = countStartedVerses(result.pages);
+      const real = countRealVerses(corpus);
+      if (laid !== real) {
+        setError(`The page layout is missing verses (${laid.toLocaleString()} of ${real.toLocaleString()}).`);
+        return;
+      }
+      setStatus('Finding your place…');
+      const saved = loadPlace();
+      let initial = Math.floor(findPageIndex(result.pages, { bookId: 'GEN', chapter: 1, verse: 1 }) / 2);
+      if (saved?.kind === 'front') initial = 0;
+      if (saved?.kind === 'ref') {
+        initial = Math.floor(findPageIndex(result.pages, saved) / 2);
+      }
+      setPages(result.pages);
+      setSpread(initial);
+      setProgress(1);
+      readyRef.current = true;
+    };
+    const frame = requestAnimationFrame(step);
+    return () => {
+      cancel = true;
+      cancelAnimationFrame(frame);
+    };
+  }, [corpus, phone]);
 
   const spreads = pages ? spreadCount(pages.length) : 0;
   const left = pages ? pageOnSpread(pages, spread, 'left') : null;
@@ -309,7 +319,11 @@ export function Reader() {
     );
   }
 
-  if (!pages || !corpus) {
+  if (phone && corpus) {
+    return <PhoneReader corpus={corpus} />;
+  }
+
+  if (!pages || !corpus || phone === null) {
     return (
       <div className="loading-screen" role="status" aria-live="polite">
         <p className="promise">Read the Bible, one page at a time.</p>

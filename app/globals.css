@@ -838,6 +838,475 @@ body[data-focus='1'] .app-header {
   background: linear-gradient(90deg, #8a6230, #e7d3a1);
 }
 
+html:has(body[data-phone='1']),
+body[data-phone='1'] {
+  overflow: hidden;
+  height: 100%;
+  background: #140e0b;
+}
+
+body[data-phone='1'] .app-header {
+  display: none;
+}
+
+body[data-phone='1'] .app-shell,
+body[data-phone='1'] .scene-wrap {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.phone-app {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding:
+    env(safe-area-inset-top)
+    env(safe-area-inset-right)
+    env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+  color: var(--parchment);
+}
+
+.phone-toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.35rem 0.75rem 0.45rem;
+  background: rgba(18, 13, 10, 0.88);
+}
+
+.phone-brand {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.phone-tools {
+  display: flex;
+  width: 100%;
+  gap: 0.35rem;
+}
+
+.phone-tools button,
+.phone-nav button,
+.phone-hint button,
+.phone-menu header button,
+.phone-menu-action,
+.phone-scenes button {
+  min-height: 44px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.phone-tools button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--parchment);
+  font-size: 0.92rem;
+}
+
+.phone-tools button[aria-pressed='true'] {
+  color: var(--gold);
+}
+
+.phone-sheet {
+  flex: 1;
+  min-height: 0;
+  margin: 0.35rem 0.7rem 0.45rem;
+  display: flex;
+  flex-direction: column;
+  background: #f7f1e6;
+  color: #1c140f;
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.phone-sheet-title {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid rgba(196, 163, 90, 0.55);
+  background: transparent;
+  color: #5c3d2e;
+  padding: 0.75rem 1rem 0.65rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.phone-sheet-title span {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.phone-sheet-title small {
+  font-size: 0.82rem;
+  font-weight: 400;
+  font-style: italic;
+  color: #8a6230;
+}
+
+.phone-sheet-title:disabled {
+  opacity: 1;
+}
+
+.phone-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.7rem 0.85rem 0.2rem 0.7rem;
+}
+
+.phone-lines,
+.phone-copy {
+  animation: phone-forward 240ms ease;
+}
+
+.phone-lines.is-back,
+.phone-copy.is-back {
+  animation-name: phone-back;
+}
+
+.phone-chapter,
+.phone-line {
+  margin: 0;
+  font-size: 18px;
+  line-height: var(--phone-line);
+}
+
+.phone-chapter {
+  min-height: var(--phone-line);
+}
+
+.phone-chapter {
+  text-align: center;
+  font-style: italic;
+  font-weight: 700;
+  color: #5c3d2e;
+}
+
+.phone-line {
+  display: flow-root;
+}
+
+.phone-num {
+  float: left;
+  width: var(--phone-num);
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+  color: #8a6230;
+  padding-right: 0.35rem;
+  line-height: var(--phone-line);
+}
+
+.phone-copy {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem;
+  gap: 0.35rem;
+}
+
+.phone-copy h2 {
+  margin: 0.2rem 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #5c3d2e;
+}
+
+.phone-copy p,
+.phone-kicker {
+  margin: 0;
+}
+
+.phone-kicker {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: #8a6230;
+}
+
+.phone-copy p:last-child {
+  color: #6b5e52;
+  line-height: 1.45;
+  max-width: 18rem;
+}
+
+.phone-status {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  top: 2rem;
+  margin: 0;
+  text-align: center;
+  color: #6b5e52;
+  font-style: italic;
+}
+
+.phone-track {
+  display: block;
+  height: 3px;
+  margin: 0.8rem auto 0;
+  width: min(180px, 60%);
+  background: rgba(92, 61, 46, 0.15);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.phone-track span {
+  display: block;
+  height: 100%;
+  background: #8a6230;
+}
+
+.phone-folio {
+  margin: 0;
+  padding: 0.15rem 0 0.55rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #8d7762;
+}
+
+.phone-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0 0.7rem 0.35rem;
+  padding: 0.35rem 0.45rem 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 253, 249, 0.96);
+  color: var(--ink);
+  font-size: 0.86rem;
+}
+
+.phone-hint button {
+  border: none;
+  background: var(--wood);
+  color: var(--parchment);
+  padding: 0 0.9rem;
+}
+
+.phone-progress {
+  height: 3px;
+  margin: 0 0.9rem;
+  background: rgba(244, 239, 230, 0.16);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.phone-progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8a6230, #e7d3a1);
+}
+
+.phone-nav {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem 0.7rem;
+  background: rgba(18, 13, 10, 0.88);
+}
+
+.phone-nav button {
+  flex: 1;
+  border: none;
+  background: #f4efe6;
+  color: #1c140f;
+  font-size: 1.05rem;
+}
+
+.phone-nav button:disabled {
+  opacity: 0.35;
+}
+
+.phone-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: rgba(18, 13, 10, 0.55);
+  display: flex;
+  align-items: flex-end;
+}
+
+.phone-menu {
+  width: 100%;
+  padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+  background: #fffdf9;
+  color: var(--ink);
+  border-radius: 18px 18px 0 0;
+}
+
+.phone-menu header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.phone-menu h2 {
+  margin: 0;
+  color: var(--wood);
+  font-size: 1.2rem;
+}
+
+.phone-menu header button,
+.phone-menu-action,
+.phone-scenes button {
+  border: 1px solid #e4d8c8;
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-menu header button {
+  padding: 0 0.9rem;
+}
+
+.phone-menu-note {
+  margin: 0.35rem 0 0.75rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.phone-scenes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+
+.phone-scenes button.is-on {
+  background: var(--wood);
+  color: var(--parchment);
+  border-color: var(--wood);
+}
+
+.phone-volume {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.9rem 0 0.4rem;
+  font-weight: 700;
+}
+
+.phone-volume input {
+  flex: 1;
+  accent-color: var(--wood);
+}
+
+.phone-menu-action {
+  width: 100%;
+  margin-top: 0.45rem;
+  font: inherit;
+  font-weight: 700;
+}
+
+@keyframes phone-forward {
+  from {
+    opacity: 0.35;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes phone-back {
+  from {
+    opacity: 0.35;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-height: 520px) {
+  .phone-brand {
+    display: none;
+  }
+
+  .phone-toolbar {
+    padding: 0.15rem 0.55rem 0.1rem;
+  }
+
+  .phone-tools button {
+    min-height: 36px;
+    font-size: 0.88rem;
+  }
+
+  .phone-sheet {
+    margin: 0.15rem 0.55rem 0.15rem;
+    border-radius: 14px;
+  }
+
+  .phone-sheet-title {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.35rem 0.75rem 0.3rem;
+  }
+
+  .phone-sheet-title span {
+    font-size: 1.05rem;
+  }
+
+  .phone-body {
+    padding: 0.2rem 0.7rem 0.05rem 0.5rem;
+  }
+
+  .phone-folio {
+    padding: 0 0.4rem 0.2rem;
+  }
+
+  .phone-hint {
+    display: none;
+  }
+
+  .phone-nav {
+    padding: 0.25rem 0.55rem 0.35rem;
+  }
+
+  .phone-nav button {
+    min-height: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone-lines,
+  .phone-copy,
+  .phone-lines.is-back,
+  .phone-copy.is-back {
+    animation: none;
+  }
+}
+
+.phone-app.is-still .phone-lines,
+.phone-app.is-still .phone-copy {
+  animation: none;
+}
+
 @media (max-width: 640px) {
   .app-header {
     padding: 0.55rem 0.75rem;
