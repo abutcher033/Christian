@@ -123,9 +123,9 @@ function TurningSheet({
       const travel = Math.min(1, Math.max(0, progress));
       const strength = Math.sin(travel * Math.PI);
       const fold = SHEET_W * (1 - travel);
-      shadowMaterial.opacity = 0.2 * strength;
-      shadow.current.position.x = (dir === 'next' ? 1 : -1) * (fold - 0.08);
-      shadow.current.scale.x = 0.28 + strength * 0.45;
+      shadowMaterial.opacity = 0.32 * strength;
+      shadow.current.position.x = (dir === 'next' ? 1 : -1) * (fold - 0.05);
+      shadow.current.scale.x = 0.45 + strength * 0.7;
     }
   });
 
@@ -229,7 +229,7 @@ export const BibleBook = forwardRef<BibleBookHandle, Props>(function BibleBook(
       return;
     }
     const distance = Math.abs(to - from);
-    const duration = from === 0 && to === 1 ? 0.48 : Math.max(0.16, distance * 0.34);
+    const duration = from === 0 && to === 1 ? 0.72 : Math.max(0.22, distance * 0.45);
     animRef.current = { dir, from, to, start: -1, duration, commit };
     progressRef.current = from;
     const current = curlRef.current;

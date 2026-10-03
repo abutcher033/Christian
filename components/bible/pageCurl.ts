@@ -1,15 +1,10 @@
 import * as THREE from 'three';
 import { SHEET_W } from './metrics';
 
-/** The page moves at once, then settles like a sheet landing. */
+/** Lifts quickly, holds the curl long enough to see, then settles. */
 export function easePage(amount: number): number {
   const t = Math.min(1, Math.max(0, amount));
-  return 1 - Math.pow(1 - t, 2.15);
-}
-
-function smooth(amount: number): number {
-  const u = Math.min(1, Math.max(0, amount));
-  return u * u * (3 - 2 * u);
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
 /** A flat sheet. x = 0 is the spine, x = width is the outer edge. */
@@ -23,52 +18,32 @@ export function createLeaf(width: number, height: number) {
 }
 
 /**
- * Roll the sheet from the outer edge toward the spine.
- * A narrow curl travels across the page; the paper that has passed the curl
- * lies flat again, so the turn reads as a page and not a flipping card.
+ * The outer edge leads and the sheet bends around the spine.
+ * Halfway up, the page is a tall arch you can see from the chair.
+ * At the end it lies flat on the other side.
  */
 export function curlSheet(geo: THREE.BufferGeometry, progress: number, dir: 'next' | 'prev') {
   const pos = geo.attributes.position as THREE.BufferAttribute;
+  const normal = geo.attributes.normal as THREE.BufferAttribute;
   const base = geo.userData.base as Float32Array;
   const width = SHEET_W;
   const t = Math.min(1, Math.max(0, progress));
   const sign = dir === 'next' ? 1 : -1;
+  const edge = Math.PI * t;
+  const bend = Math.sin(Math.PI * t);
 
   for (let i = 0; i < pos.count; i += 1) {
     const s = base[i * 3];
     const z = base[i * 3 + 2];
-    let x = s;
-    let y = 0.004;
-
-    if (t > 0.001 && t < 0.999) {
-      const radius = 0.11 * Math.sin(Math.PI * t);
-      const fold = width * (1 - t);
-      if (s > fold) {
-        const arc = s - fold;
-        const half = Math.PI * Math.max(radius, 1e-4);
-        if (arc <= half) {
-          const angle = arc / Math.max(radius, 1e-4);
-          x = fold - radius * Math.sin(angle);
-          y = radius * (1 - Math.cos(angle)) + 0.004;
-        } else {
-          const extra = arc - half;
-          const settled = smooth(Math.min(1, extra / 0.16));
-          y = 2 * radius * (1 - settled) + 0.005 * settled;
-          x = fold - extra;
-        }
-        const land = smooth(Math.min(1, Math.max(0, (t - 0.84) / 0.16)));
-        const done = Math.min(1, arc / (half + 0.35));
-        const weight = land * done;
-        x += (-s - x) * weight;
-        y += (0.004 - y) * weight;
-      }
-    } else if (t >= 0.999) {
-      x = -s;
-    }
-
-    pos.setXYZ(i, x * sign, y, z);
+    const shaped = Math.pow(s / width, 0.52);
+    const angle = t <= 0 || t >= 1 ? edge : edge * (1 - bend * (1 - shaped));
+    const x = Math.cos(angle) * s;
+    const y = Math.sin(angle) * s;
+    pos.setXYZ(i, x * sign, y + 0.004, z);
+    normal.setXYZ(i, -Math.sin(angle) * sign, Math.cos(angle), 0);
   }
   pos.needsUpdate = true;
+  normal.needsUpdate = true;
 }
 
 export function createPageMaterial(front: THREE.Texture, back: THREE.Texture, dir: 'next' | 'prev') {

@@ -2,4 +2,4 @@
 export const SHEET_W = 1.16;
 export const SHEET_H = SHEET_W * (1700 / 1200);
 /** A slight tip so the page faces the reader without shrinking the far lines. */
-export const BOOK_TILT = 0.045;
+export const BOOK_TILT = 0.09;

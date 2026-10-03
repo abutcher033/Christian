@@ -6,8 +6,8 @@ import * as THREE from 'three';
 import { BOOK_TILT, SHEET_H, SHEET_W } from './metrics';
 
 const LOOK = new THREE.Vector3(0, 0.26, 0.01);
-/** A few degrees off straight down, so the sheet still reads as paper. */
-const VIEW_TILT = 0.1;
+/** Low enough to see a page lift, steep enough that the lines stay even. */
+const VIEW_TILT = 0.3;
 
 /**
  * Frames the open book so the type fills the stage.
@@ -27,11 +27,12 @@ export function CameraRig() {
     }
     const aspect = size.width / Math.max(1, size.height);
     const tanHalf = Math.tan((perspective.fov * Math.PI) / 360);
-    const spreadW = SHEET_W * 2 + 0.2;
-    const spreadH = SHEET_H * Math.cos(BOOK_TILT) + 0.1;
-    const fill = 0.94;
-    const distance =
-      Math.max(spreadH / (2 * tanHalf), spreadW / (2 * tanHalf * Math.max(aspect, 0.2))) / fill;
+    const spreadW = SHEET_W * 2 + 0.06;
+    const spreadH = SHEET_H * Math.cos(BOOK_TILT) + 0.02;
+    const fit =
+      Math.max(spreadH / (2 * tanHalf), spreadW / (2 * tanHalf * Math.max(aspect, 0.2)));
+    // Close enough that the type is large, far enough that the last line stays on the page.
+    const distance = fit * 0.9;
     desired.current.set(0, LOOK.y + Math.cos(VIEW_TILT) * distance, LOOK.z + Math.sin(VIEW_TILT) * distance);
     if (!ready.current) {
       camera.position.copy(desired.current);

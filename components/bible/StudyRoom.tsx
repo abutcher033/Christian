@@ -223,7 +223,7 @@ function Window({ scene }: { scene: ScenePreset }) {
 function DeskLamp({ amount }: { amount: number }) {
   const wood = useWoodTexture();
   return (
-    <group position={[1.48, 0.02, -0.72]}>
+    <group position={[1.92, 0.02, -1.28]}>
       <mesh position={[0, 0.04, 0]} castShadow>
         <cylinderGeometry args={[0.09, 0.11, 0.04, 16]} />
         <meshStandardMaterial color="#5c4030" roughness={0.55} metalness={0.2} />
@@ -367,15 +367,15 @@ export function StudyRoom({ scene }: { scene: ScenePreset }) {
       <Hearth amount={scene.fire} />
       <DeskLamp amount={scene.lamp} />
 
-      <mesh position={[-1.52, 0.08, -0.72]} castShadow>
+      <mesh position={[-1.95, 0.08, -1.2]} castShadow>
         <boxGeometry args={[0.28, 0.05, 0.2]} />
         <meshStandardMaterial color="#6e2f2a" roughness={0.55} />
       </mesh>
-      <mesh position={[-1.52, 0.14, -0.72]} castShadow>
+      <mesh position={[-1.95, 0.14, -1.2]} castShadow>
         <boxGeometry args={[0.26, 0.045, 0.18]} />
         <meshStandardMaterial color="#243044" roughness={0.55} />
       </mesh>
-      <mesh position={[-1.52, 0.19, -0.72]} castShadow>
+      <mesh position={[-1.95, 0.19, -1.2]} castShadow>
         <boxGeometry args={[0.24, 0.04, 0.17]} />
         <meshStandardMaterial color="#2f4a3c" roughness={0.55} />
       </mesh>
