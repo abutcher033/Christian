@@ -5,7 +5,7 @@ type Props = {
   heading?: string;
 };
 
-export function ScriptureBlock({ passage, heading = 'Scripture first' }: Props) {
+export function ScriptureBlock({ passage, heading = 'The passage' }: Props) {
   if (!passage || passage.verses.length === 0) return null;
   return (
     <div className="verse-strip scripture-block">

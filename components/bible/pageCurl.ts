@@ -1,0 +1,82 @@
+import * as THREE from 'three';
+import { SHEET_W } from './metrics';
+
+/** Lifts quickly, holds the curl long enough to see, then settles. */
+export function easePage(amount: number): number {
+  const t = Math.min(1, Math.max(0, amount));
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+/** A flat sheet. x = 0 is the spine, x = width is the outer edge. */
+export function createLeaf(width: number, height: number) {
+  const geo = new THREE.PlaneGeometry(width, height, 80, 3);
+  geo.rotateX(-Math.PI / 2);
+  geo.translate(width / 2, 0, 0);
+  geo.userData.base = Float32Array.from(geo.attributes.position.array);
+  geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0.15, 0), width + height);
+  return geo;
+}
+
+/**
+ * The outer edge leads and the sheet bends around the spine.
+ * Halfway up, the page is a tall arch you can see from the chair.
+ * At the end it lies flat on the other side.
+ */
+export function curlSheet(geo: THREE.BufferGeometry, progress: number, dir: 'next' | 'prev') {
+  const pos = geo.attributes.position as THREE.BufferAttribute;
+  const normal = geo.attributes.normal as THREE.BufferAttribute;
+  const base = geo.userData.base as Float32Array;
+  const width = SHEET_W;
+  const t = Math.min(1, Math.max(0, progress));
+  const sign = dir === 'next' ? 1 : -1;
+  const edge = Math.PI * t;
+  const bend = Math.sin(Math.PI * t);
+
+  for (let i = 0; i < pos.count; i += 1) {
+    const s = base[i * 3];
+    const z = base[i * 3 + 2];
+    const shaped = Math.pow(s / width, 0.52);
+    const angle = t <= 0 || t >= 1 ? edge : edge * (1 - bend * (1 - shaped));
+    const x = Math.cos(angle) * s;
+    const y = Math.sin(angle) * s;
+    pos.setXYZ(i, x * sign, y + 0.004, z);
+    normal.setXYZ(i, -Math.sin(angle) * sign, Math.cos(angle), 0);
+  }
+  pos.needsUpdate = true;
+  normal.needsUpdate = true;
+}
+
+export function createPageMaterial(front: THREE.Texture, back: THREE.Texture, dir: 'next' | 'prev') {
+  const material = new THREE.MeshBasicMaterial({
+    map: front,
+    side: THREE.DoubleSide,
+    toneMapped: false,
+  });
+  material.polygonOffset = true;
+  material.polygonOffsetFactor = -2;
+  material.polygonOffsetUnits = -2;
+  material.customProgramCacheKey = () => `bible-page-${dir}`;
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.backMap = { value: back };
+    shader.uniforms.uPrev = { value: dir === 'prev' ? 1 : 0 };
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        '#include <map_pars_fragment>',
+        '#include <map_pars_fragment>\nuniform sampler2D backMap;\nuniform float uPrev;\n',
+      )
+      .replace(
+        '#include <map_fragment>',
+        `
+#ifdef USE_MAP
+  vec2 pageUv = vMapUv;
+  if (uPrev > 0.5) pageUv.x = 1.0 - pageUv.x;
+  vec2 backUv = uPrev > 0.5 ? vMapUv : vec2(1.0 - vMapUv.x, vMapUv.y);
+  float showBack = (uPrev > 0.5) ? (gl_FrontFacing ? 1.0 : 0.0) : (gl_FrontFacing ? 0.0 : 1.0);
+  vec4 sampledDiffuseColor = mix(texture2D(map, pageUv), texture2D(backMap, backUv), showBack);
+  diffuseColor *= sampledDiffuseColor;
+#endif
+`,
+      );
+  };
+  return material;
+}

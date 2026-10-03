@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { getAmbience } from '@/lib/ambience/engine';
 import {
   DEFAULT_SETTINGS,
   loadSettings,
@@ -28,7 +29,24 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     if (!hydrated) return;
     saveSettings(settings);
     document.documentElement.dataset.largeTargets = settings.largeTargets ? '1' : '0';
+    const ambience = getAmbience();
+    ambience.setScene(settings.scene);
+    ambience.setVolume(settings.volume);
+    ambience.setMuted(!settings.soundOn);
   }, [settings, hydrated]);
+
+  useEffect(() => {
+    const unlock = () => {
+      if (!settings.soundOn) return;
+      void getAmbience().resume();
+    };
+    window.addEventListener('pointerdown', unlock);
+    window.addEventListener('keydown', unlock);
+    return () => {
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+  }, [settings.soundOn]);
 
   const update = (patch: Partial<ReaderSettings>) => {
     setSettings((current) => ({ ...current, ...patch }));

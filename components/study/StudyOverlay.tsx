@@ -62,7 +62,7 @@ export function StudyOverlay({
               <>
                 <span className="badge">Study</span>
                 <h2>{label}</h2>
-                <p className="muted-line">Read the page first, then open a study note.</p>
+                <p className="muted-line">Notes for the chapters open on the desk. The Bible stays underneath.</p>
               </>
             )}
           </div>
@@ -73,14 +73,11 @@ export function StudyOverlay({
 
         {!entry && (
           <>
-            {scriptureFirst && passage && <ScriptureBlock passage={passage} heading="On this page" />}
+            {scriptureFirst && passage && <ScriptureBlock passage={passage} heading="Your place" />}
             {entries.length === 0 ? (
               <div className="empty-study">
-                <h3>Open the Book</h3>
-                <p>
-                  No study notes on this page yet. Read the verses slowly, ask the Lord for light,
-                  then check back as notes are added. The Scripture on the page is the main thing.
-                </p>
+                <h3>No notes on this page</h3>
+                <p>Nothing else has been written for these chapters. Stay with the verses on the desk.</p>
               </div>
             ) : (
               <ul className="entry-list">
@@ -101,7 +98,7 @@ export function StudyOverlay({
         {entry && (
           <>
             <button type="button" className="text-button" onClick={onBackToList}>
-              ← All entries on this page
+              ← All notes for these chapters
             </button>
             {scriptureFirst && <ScriptureBlock passage={passage} />}
             <p className="study-summary">{entry.summary}</p>
@@ -116,7 +113,7 @@ export function StudyOverlay({
             </div>
             {entry.themes.length > 0 && <p className="media-caption">Themes: {entry.themes.join(' · ')}</p>}
             <p className="study-link">
-              <Link href={`/study/${entry.id}`}>Open full study page →</Link>
+              <Link href={`/study/${entry.id}`}>Open this note on its own page</Link>
             </p>
           </>
         )}

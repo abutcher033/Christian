@@ -65,7 +65,7 @@ export function BookPicker({ open, corpus, current, onClose, onJump }: Props) {
         <header>
           <div>
             <span className="badge">World English Bible</span>
-            <h2>Open a passage</h2>
+            <h2>Find a passage</h2>
           </div>
           <button type="button" className="close-btn" onClick={onClose} aria-label="Close">
             ×
@@ -73,7 +73,7 @@ export function BookPicker({ open, corpus, current, onClose, onJump }: Props) {
         </header>
 
         <form className="ref-form" onSubmit={submitQuery}>
-          <label htmlFor="reference">Go to a reference</label>
+          <label htmlFor="reference">Type a verse</label>
           <div className="ref-row">
             <input
               id="reference"
@@ -83,7 +83,7 @@ export function BookPicker({ open, corpus, current, onClose, onJump }: Props) {
               placeholder="John 3:16"
               autoComplete="off"
             />
-            <button type="submit">Open</button>
+            <button type="submit">Go</button>
           </div>
           {hint && <p className="settings-note">{hint}</p>}
         </form>
