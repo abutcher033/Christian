@@ -62,7 +62,7 @@ export function StudyOverlay({
               <>
                 <span className="badge">Study</span>
                 <h2>{label}</h2>
-                <p className="muted-line">Notes for the chapters open on the desk. The Bible stays underneath.</p>
+                <p className="muted-line">Notes for these chapters. The reading stays underneath.</p>
               </>
             )}
           </div>
@@ -77,7 +77,7 @@ export function StudyOverlay({
             {entries.length === 0 ? (
               <div className="empty-study">
                 <h3>No notes on this page</h3>
-                <p>Nothing else has been written for these chapters. Stay with the verses on the desk.</p>
+                <p>Nothing else has been written for these chapters. Stay with the verses on the page.</p>
               </div>
             ) : (
               <ul className="entry-list">
