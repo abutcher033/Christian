@@ -12,6 +12,8 @@ export class Ambience {
   private rainGain: GainNode | null = null;
   private bed: AudioBufferSourceNode | null = null;
   private rain: AudioBufferSourceNode | null = null;
+  private flameFilter: BiquadFilterNode | null = null;
+  private flameLevel: GainNode | null = null;
   private fireTimer = 0;
   private birdTimer = 0;
   private scene: StudySceneId = 'hearth';
@@ -108,20 +110,32 @@ export class Ambience {
     if (!ctx || !this.fireGain || !this.rainGain) return;
     this.loops = true;
 
-    const bedBuffer = this.makeNoise(2.5, 'brown');
+    const bedBuffer = this.makeNoise(6, 'pink');
     const bed = ctx.createBufferSource();
     bed.buffer = bedBuffer;
     bed.loop = true;
-    const bedFilter = ctx.createBiquadFilter();
-    bedFilter.type = 'lowpass';
-    bedFilter.frequency.value = 380;
-    const bedGain = ctx.createGain();
-    bedGain.gain.value = 0.22;
-    bed.connect(bedFilter);
-    bedFilter.connect(bedGain);
-    bedGain.connect(this.fireGain);
+    const flameFilter = ctx.createBiquadFilter();
+    flameFilter.type = 'lowpass';
+    flameFilter.frequency.value = 280;
+    flameFilter.Q.value = 0.6;
+    const flameLevel = ctx.createGain();
+    flameLevel.gain.value = 0.085;
+    const hiss = ctx.createBiquadFilter();
+    hiss.type = 'bandpass';
+    hiss.frequency.value = 1400;
+    hiss.Q.value = 0.45;
+    const hissLevel = ctx.createGain();
+    hissLevel.gain.value = 0.012;
+    bed.connect(flameFilter);
+    flameFilter.connect(flameLevel);
+    flameLevel.connect(this.fireGain);
+    bed.connect(hiss);
+    hiss.connect(hissLevel);
+    hissLevel.connect(this.fireGain);
     bed.start();
     this.bed = bed;
+    this.flameFilter = flameFilter;
+    this.flameLevel = flameLevel;
 
     const rainBuffer = this.makeNoise(2, 'white');
     const rain = ctx.createBufferSource();
@@ -161,12 +175,27 @@ export class Ambience {
 
   private scheduleFire() {
     window.clearTimeout(this.fireTimer);
-    const preset = sceneById(this.scene);
-    const wait = preset.fire > 0.05 ? 50 + Math.random() * (preset.fire > 0.7 ? 140 : 320) : 400;
+    const amount = sceneById(this.scene).fire;
+    const wait = amount > 0.05 ? (520 + Math.random() * 1600) / (0.45 + amount) : 1600;
     this.fireTimer = window.setTimeout(() => {
-      if (sceneById(this.scene).fire > 0.05) this.crackle();
+      const fire = sceneById(this.scene).fire;
+      if (fire > 0.05) {
+        this.breathe(fire);
+        this.crackle(fire);
+      }
       this.scheduleFire();
     }, wait);
+  }
+
+  /** Let the flame swell and thin, the way a real fire licks. */
+  private breathe(amount: number) {
+    const ctx = this.ctx;
+    const filter = this.flameFilter;
+    const level = this.flameLevel;
+    if (!ctx || !filter || !level) return;
+    const now = ctx.currentTime;
+    filter.frequency.setTargetAtTime(190 + Math.random() * 280 * (0.35 + amount), now, 0.45);
+    level.gain.setTargetAtTime(0.05 + Math.random() * 0.05 * (0.4 + amount), now, 0.55);
   }
 
   private scheduleBird() {
@@ -184,21 +213,44 @@ export class Ambience {
     }, wait);
   }
 
-  private crackle() {
+  private crackle(amount: number) {
+    const roll = Math.random();
+    const kind: WoodPop = roll < 0.62 ? 'tick' : roll < 0.92 ? 'crack' : 'log';
+    this.woodPop(kind, amount);
+    if (kind !== 'tick' && Math.random() < 0.4 * amount) {
+      const extras = 1 + Math.floor(Math.random() * 2);
+      for (let n = 0; n < extras; n += 1) {
+        window.setTimeout(() => this.woodPop('tick', amount), 50 + Math.random() * 140 * (n + 1));
+      }
+    }
+  }
+
+  /**
+   * A wood fire pops with a hard attack and a short falling knock,
+   * then a few quieter ticks as the ember splits.
+   */
+  private woodPop(kind: WoodPop, amount: number) {
     const ctx = this.ctx;
     const fire = this.fireGain;
     if (!ctx || !fire || ctx.state !== 'running') return;
-    const loud = Math.random() > 0.82;
-    const duration = loud ? 0.09 + Math.random() * 0.08 : 0.025 + Math.random() * 0.05;
-    const buffer = this.burst(duration);
+    const duration =
+      kind === 'tick' ? 0.01 + Math.random() * 0.018 : kind === 'crack' ? 0.04 + Math.random() * 0.045 : 0.08 + Math.random() * 0.07;
+    const buffer = this.woodBurst(duration, kind);
     const src = ctx.createBufferSource();
     src.buffer = buffer;
     const filter = ctx.createBiquadFilter();
-    filter.type = loud ? 'lowpass' : 'bandpass';
-    filter.frequency.value = loud ? 500 + Math.random() * 400 : 600 + Math.random() * 2200;
-    filter.Q.value = loud ? 0.6 : 0.8;
+    if (kind === 'tick') {
+      filter.type = 'highpass';
+      filter.frequency.value = 1600 + Math.random() * 1800;
+      filter.Q.value = 0.6;
+    } else {
+      filter.type = 'lowpass';
+      filter.frequency.value = kind === 'crack' ? 1800 + Math.random() * 1400 : 700 + Math.random() * 500;
+      filter.Q.value = 0.45;
+    }
     const gain = ctx.createGain();
-    gain.gain.value = (loud ? 0.55 : 0.18) + Math.random() * 0.2;
+    const base = kind === 'tick' ? 0.035 : kind === 'crack' ? 0.09 : 0.13;
+    gain.gain.value = base * (0.55 + amount * 0.45) + Math.random() * base * 0.25;
     src.connect(filter);
     filter.connect(gain);
     gain.connect(fire);
@@ -242,38 +294,78 @@ export class Ambience {
     };
   }
 
-  private burst(duration: number) {
+  private woodBurst(duration: number, kind: WoodPop) {
     const ctx = this.ctx;
     if (!ctx) throw new Error('Audio is not ready.');
-    const length = Math.max(1, Math.floor(ctx.sampleRate * duration));
-    const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+    const sampleRate = ctx.sampleRate;
+    const length = Math.max(1, Math.floor(sampleRate * duration));
+    const buffer = ctx.createBuffer(1, length, sampleRate);
     const data = buffer.getChannelData(0);
+    const knock = kind === 'tick' ? 0 : 120 + Math.random() * 200;
+    const noiseMix = kind === 'tick' ? 1 : 0.82;
+    const thumpMix = kind === 'log' ? 0.45 : 0.28;
+    let noise = 0;
+    let peak = 0;
     for (let i = 0; i < length; i += 1) {
-      const env = Math.sin((i / length) * Math.PI);
-      data[i] = (Math.random() * 2 - 1) * env;
+      const t = i / sampleRate;
+      const white = Math.random() * 2 - 1;
+      const coeff = kind === 'tick' ? 0.72 : kind === 'crack' ? 0.55 : 0.22;
+      noise += coeff * (white - noise);
+      const env = Math.exp(-t / (duration * (kind === 'tick' ? 0.16 : 0.22)));
+      const fall = knock === 0 ? 0 : knock * (1 - 0.55 * Math.min(1, t / 0.035));
+      const thump = knock === 0 ? 0 : Math.sin(2 * Math.PI * fall * t) * Math.exp(-t / (duration * 0.2));
+      const sample = noise * noiseMix + thump * thumpMix;
+      data[i] = sample * env;
+      peak = Math.max(peak, Math.abs(data[i]));
+    }
+    if (peak > 0.001) {
+      const scale = 0.85 / peak;
+      for (let i = 0; i < length; i += 1) data[i] *= scale;
     }
     return buffer;
   }
 
-  private makeNoise(seconds: number, color: 'white' | 'brown') {
+  private makeNoise(seconds: number, color: 'white' | 'pink') {
     const ctx = this.ctx;
     if (!ctx) throw new Error('Audio is not ready.');
     const length = Math.floor(ctx.sampleRate * seconds);
     const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
     const data = buffer.getChannelData(0);
-    let last = 0;
+    let b0 = 0;
+    let b1 = 0;
+    let b2 = 0;
+    let b3 = 0;
+    let b4 = 0;
+    let b5 = 0;
+    let b6 = 0;
     for (let i = 0; i < length; i += 1) {
       const white = Math.random() * 2 - 1;
-      if (color === 'brown') {
-        last = (last + 0.02 * white) / 1.02;
-        data[i] = last * 3.2;
-      } else {
+      if (color === 'white') {
         data[i] = white;
+        continue;
+      }
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.969 * b2 + white * 0.153852;
+      b3 = 0.8665 * b3 + white * 0.3104856;
+      b4 = 0.55 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.016898;
+      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+      b6 = white * 0.115926;
+    }
+    if (color === 'pink') {
+      const fade = Math.min(length >> 1, Math.floor(ctx.sampleRate * 0.04));
+      for (let i = 0; i < fade; i += 1) {
+        const edge = i / fade;
+        data[i] *= edge;
+        data[length - 1 - i] *= edge;
       }
     }
     return buffer;
   }
 }
+
+type WoodPop = 'tick' | 'crack' | 'log';
 
 let shared: Ambience | null = null;
 
