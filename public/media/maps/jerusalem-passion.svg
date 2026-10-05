@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="480" viewBox="0 0 720 480">
+  <rect width="720" height="480" fill="#f4efe6"/>
+  <text x="360" y="34" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#5c3d2e">Jerusalem and the Cross</text>
+  <text x="360" y="56" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#6b5e52">Only what the Gospels and Hebrews locate. No modern pin.</text>
+  <rect x="200" y="110" width="280" height="220" rx="8" fill="#e7d7c3" stroke="#5c3d2e" stroke-width="3"/>
+  <text x="340" y="140" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#6b5e52">City wall</text>
+  <rect x="280" y="180" width="120" height="80" rx="4" fill="#fff" stroke="#8a6230"/>
+  <text x="340" y="214" text-anchor="middle" font-family="Georgia, serif" font-size="15" fill="#5c3d2e">Temple</text>
+  <text x="340" y="234" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b5e52">Matthew 21</text>
+  <rect x="520" y="160" width="160" height="140" rx="12" fill="#e7efeb" stroke="#2f5d50"/>
+  <text x="600" y="210" text-anchor="middle" font-family="Georgia, serif" font-size="15" fill="#2f5d50">Mount of Olives</text>
+  <text x="600" y="234" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#1c140f">Gethsemane</text>
+  <text x="600" y="256" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b5e52">East of the city</text>
+  <text x="600" y="274" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b5e52">Luke 22:39</text>
+  <rect x="40" y="150" width="140" height="150" rx="12" fill="#f7f1e6" stroke="#8a6230"/>
+  <text x="110" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#5c3d2e">Outside</text>
+  <text x="110" y="222" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#5c3d2e">the gate</text>
+  <text x="110" y="250" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b5e52">John 19:20</text>
+  <text x="110" y="268" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b5e52">Hebrews 13:12</text>
+  <text x="360" y="400" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#1c140f">The Lamb was offered outside the camp, as the sin offering was.</text>
+  <text x="360" y="440" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#6b5e52">Read Matthew 26-27, John 19, and Hebrews 13:11-12.</text>
+</svg>

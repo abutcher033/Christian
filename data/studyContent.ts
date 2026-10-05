@@ -1,7 +1,15 @@
 /**
  * Christian — study notes are secondary annotations on the full WEB text.
  * Markers attach by book and chapter, not by a fixed demo page index.
+ *
+ * Added notes stay inside what Scripture says. Where a New Testament writer
+ * quotes the Law, the Prophets, or the Psalms, the note follows that writer.
  */
+import { APOSTLE_ENTRIES } from './study/apostles';
+import { EPISTLE_ENTRIES } from './study/epistles';
+import { NEW_TESTAMENT_ENTRIES } from './study/newTestament';
+import { PSALM_ENTRIES } from './study/psalms';
+import { QUOTED_ENTRIES } from './study/quoted';
 
 export type StudyMediaType = 'note' | 'infographic' | 'map' | 'video' | 'timeline' | 'word-study';
 
@@ -43,9 +51,9 @@ export const STUDY_ENTRIES: StudyEntry[] = [
     summary:
       'John 3:16–18 proclaims God’s love, the gift of the Son, and life through faith — not our works.',
     bodyMd:
-      '**Read first.** These verses sit in Jesus’ talk with Nicodemus about new birth.\n\nGod loved; God gave; whoever believes has eternal life. Condemnation rests on unbelief — refusing the light — not on failing to earn favor. Grace alone, through faith alone, in Christ alone.',
+      '**Read John 3:16–18 in the conversation with Nicodemus.** Jesus has already said the Son of Man must be lifted up, as Moses lifted up the serpent (John 3:14; Numbers 21:8–9). Then he says why. God loved the world. God gave his only begotten Son. Whoever believes in him does not perish, but has eternal life. The Son was not sent to condemn the world, but that the world should be saved through him. The one who believes is not condemned. The one who does not believe is condemned already, because he has not believed in the name of the Son.\n\nLife is a gift received by believing, not a wage. Condemnation in these verses is unbelief, not a failure to pile up good works. The law still shows our need (Romans 3:20). It does not add a second way beside the Son God gave.\n\nDo not shrink “whoever” and do not add a condition Jesus did not add. Believe in the Son, and have eternal life.',
     themes: ['gospel', 'faith', 'love of God', 'eternal life'],
-    relatedIds: ['john-3-infographic-believe', 'john-3-16-believe-or-not'],
+    relatedIds: ['john-3-infographic-believe', 'john-3-16-believe-or-not', 'jn-3-lifted-note', 'num-21-serpent-note'],
     prayerPrompt:
       'Father, thank You for loving the world and giving Your Son. Help me trust Jesus alone for life.',
     apply:
@@ -170,9 +178,9 @@ export const STUDY_ENTRIES: StudyEntry[] = [
     title: 'The Word Became Flesh',
     summary: 'John 1:1–18 — the eternal Word with God, made flesh, full of grace and truth.',
     bodyMd:
-      '**Read John 1:1–18.** The Son is distinct from the Father yet truly God — not a mode, not a creature. Grace and truth come through Jesus Christ.',
+      '**Read John 1:1–18.** In the beginning was the Word. The Word was with God, and the Word was God. He was in the beginning with God. All things were made through him (see Genesis 1:1–3). The Word became flesh and lived among us, full of grace and truth. No one has seen God at any time. The only born Son, who is in the bosom of the Father, has declared him.\n\nThe Son is with God and is God. That is not a mode of one person, and it is not a creature. Grace and truth came through Jesus Christ, not through a second law beside Moses. “The law was given through Moses. Grace and truth were realized through Jesus Christ” (John 1:17). The law is God’s. The fullness is the Son. John the Baptist will point at him and say, “Behold, the Lamb of God” (John 1:29).\n\nDo not stop at a beautiful prologue. The Word who made all things is the Word who became flesh to take away sin.',
     themes: ['Word', 'incarnation', 'grace', 'Trinity'],
-    relatedIds: ['john-1-word-study-logos', 'gen-1-1-creator-note'],
+    relatedIds: ['john-1-word-study-logos', 'gen-1-1-creator-note', 'jn-1-lamb-note', 'col-1-image-note'],
     prayerPrompt: 'Lord Jesus, eternal Word, thank You for becoming flesh that we might know the Father.',
     apply: 'Read John 1:14 slowly twice; thank God that grace came near in a Person.',
     pageIndex: 0,
@@ -194,6 +202,11 @@ export const STUDY_ENTRIES: StudyEntry[] = [
     apply: 'When you hear “Word” this week, remember a Person — Jesus — not only a page.',
     pageIndex: 0,
   },
+  ...QUOTED_ENTRIES,
+  ...PSALM_ENTRIES,
+  ...NEW_TESTAMENT_ENTRIES,
+  ...APOSTLE_ENTRIES,
+  ...EPISTLE_ENTRIES,
 ];
 
 export function getEntryById(id: string): StudyEntry | undefined {

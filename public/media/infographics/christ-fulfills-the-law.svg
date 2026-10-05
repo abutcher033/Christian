@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+  <rect width="760" height="480" fill="#f4efe6"/>
+  <text x="380" y="36" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#5c3d2e">The Law's Shadows, and the Substance</text>
+  <text x="380" y="60" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#6b5e52">Hebrews 10:1 - the law has a shadow of the good things to come</text>
+  <g font-family="Georgia, serif" font-size="15" fill="#1c140f">
+    <rect x="36" y="90" width="220" height="70" rx="8" fill="#fff" stroke="#c4a35a"/>
+    <rect x="270" y="90" width="220" height="70" rx="8" fill="#fff" stroke="#c4a35a"/>
+    <rect x="504" y="90" width="220" height="70" rx="8" fill="#e7efeb" stroke="#2f5d50"/>
+    <text x="146" y="118" text-anchor="middle">Passover lamb</text>
+    <text x="146" y="140" text-anchor="middle" font-size="13" fill="#6b5e52">Exodus 12</text>
+    <text x="380" y="118" text-anchor="middle">Blood on the door</text>
+    <text x="380" y="140" text-anchor="middle" font-size="13" fill="#6b5e52">Exodus 12:13</text>
+    <text x="614" y="118" text-anchor="middle">Christ our Passover</text>
+    <text x="614" y="140" text-anchor="middle" font-size="13" fill="#2f5d50">1 Corinthians 5:7</text>
+    <rect x="36" y="180" width="220" height="70" rx="8" fill="#fff" stroke="#c4a35a"/>
+    <rect x="270" y="180" width="220" height="70" rx="8" fill="#fff" stroke="#c4a35a"/>
+    <rect x="504" y="180" width="220" height="70" rx="8" fill="#e7efeb" stroke="#2f5d50"/>
+    <text x="146" y="208" text-anchor="middle">Bronze serpent</text>
+    <text x="146" y="230" text-anchor="middle" font-size="13" fill="#6b5e52">Numbers 21:8-9</text>
+    <text x="380" y="208" text-anchor="middle">Look and live</text>
+    <text x="380" y="230" text-anchor="middle" font-size="13" fill="#6b5e52">Numbers 21:9</text>
+    <text x="614" y="208" text-anchor="middle">The Son lifted up</text>
+    <text x="614" y="230" text-anchor="middle" font-size="13" fill="#2f5d50">John 3:14-15</text>
+    <rect x="36" y="270" width="220" height="70" rx="8" fill="#fff" stroke="#c4a35a"/>
+    <rect x="270" y="270" width="220" height="70" rx="8" fill="#fff" stroke="#c4a35a"/>
+    <rect x="504" y="270" width="220" height="70" rx="8" fill="#e7efeb" stroke="#2f5d50"/>
+    <text x="146" y="298" text-anchor="middle">Day of Atonement</text>
+    <text x="146" y="320" text-anchor="middle" font-size="13" fill="#6b5e52">Leviticus 16</text>
+    <text x="380" y="298" text-anchor="middle">Blood, year by year</text>
+    <text x="380" y="320" text-anchor="middle" font-size="13" fill="#6b5e52">Hebrews 10:3-4</text>
+    <text x="614" y="298" text-anchor="middle">Once for all</text>
+    <text x="614" y="320" text-anchor="middle" font-size="13" fill="#2f5d50">Hebrews 10:10-14</text>
+    <rect x="36" y="360" width="220" height="70" rx="8" fill="#fff" stroke="#c4a35a"/>
+    <rect x="270" y="360" width="220" height="70" rx="8" fill="#fff" stroke="#c4a35a"/>
+    <rect x="504" y="360" width="220" height="70" rx="8" fill="#e7efeb" stroke="#2f5d50"/>
+    <text x="146" y="388" text-anchor="middle">Prophet like Moses</text>
+    <text x="146" y="410" text-anchor="middle" font-size="13" fill="#6b5e52">Deuteronomy 18:15</text>
+    <text x="380" y="388" text-anchor="middle">Hear him</text>
+    <text x="380" y="410" text-anchor="middle" font-size="13" fill="#6b5e52">Deuteronomy 18:15</text>
+    <text x="614" y="388" text-anchor="middle">This is Jesus</text>
+    <text x="614" y="410" text-anchor="middle" font-size="13" fill="#2f5d50">Acts 3:22-26</text>
+  </g>
+</svg>

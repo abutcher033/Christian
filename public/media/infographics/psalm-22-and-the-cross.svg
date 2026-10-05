@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="460" viewBox="0 0 760 460">
+  <rect width="760" height="460" fill="#f4efe6"/>
+  <text x="380" y="36" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#5c3d2e">Psalm 22 and the Cross</text>
+  <text x="380" y="60" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#6b5e52">What the psalm says, and where the New Testament quotes it</text>
+  <g font-family="Georgia, serif" font-size="15" fill="#1c140f">
+    <text x="40" y="100" fill="#5c3d2e">Psalm 22</text>
+    <text x="420" y="100" fill="#2f5d50">New Testament</text>
+    <line x1="40" y1="112" x2="720" y2="112" stroke="#c4a35a"/>
+    <text x="40" y="150">22:1 "My God, my God, why</text>
+    <text x="40" y="172">have you forsaken me?"</text>
+    <text x="420" y="150">Jesus prays these words</text>
+    <text x="420" y="172">Matthew 27:46 / Mark 15:34</text>
+    <text x="40" y="220">22:18 They divide my garments</text>
+    <text x="40" y="242">and cast lots.</text>
+    <text x="420" y="220">John says this Scripture</text>
+    <text x="420" y="242">was fulfilled. John 19:24</text>
+    <text x="40" y="290">22:16 "They have pierced</text>
+    <text x="40" y="312">my hands and feet."</text>
+    <text x="420" y="290">The Gospels record the nails.</text>
+    <text x="420" y="312">John 20:25. John 19:37 quotes</text>
+    <text x="420" y="334">Zechariah 12:10, "pierced."</text>
+    <text x="40" y="390" fill="#6b5e52">David's words. The apostles</text>
+    <text x="40" y="412" fill="#6b5e52">preach Christ from them.</text>
+    <text x="420" y="390" fill="#6b5e52">Do not add a detail the</text>
+    <text x="420" y="412" fill="#6b5e52">text does not speak.</text>
+  </g>
+</svg>

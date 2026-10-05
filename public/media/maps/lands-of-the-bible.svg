@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="460" viewBox="0 0 720 460">
+  <rect width="720" height="460" fill="#f4efe6"/>
+  <text x="360" y="36" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#5c3d2e">Lands of the Bible</text>
+  <text x="360" y="58" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#6b5e52">A schematic for reading. Not a surveyed map.</text>
+  <rect x="36" y="84" width="150" height="300" rx="16" fill="#c5d5df"/>
+  <text x="111" y="240" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#1c3a4a">Great Sea</text>
+  <rect x="210" y="250" width="150" height="120" rx="12" fill="#e4c89a" stroke="#8a6230"/>
+  <text x="285" y="308" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#5c3d2e">Egypt</text>
+  <text x="285" y="328" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b5e52">Nile / Goshen</text>
+  <rect x="390" y="200" width="70" height="130" rx="10" fill="#efe2c8" stroke="#c4a35a"/>
+  <text x="425" y="258" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#5c3d2e" transform="rotate(-90 425 258)">Wilderness</text>
+  <rect x="480" y="120" width="130" height="210" rx="12" fill="#e7d7c3" stroke="#2f5d50" stroke-width="2"/>
+  <text x="545" y="190" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#2f5d50">Canaan</text>
+  <text x="545" y="214" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#1c140f">Jordan</text>
+  <circle cx="530" cy="250" r="5" fill="#8a6230"/>
+  <text x="542" y="254" font-family="Georgia, serif" font-size="13" fill="#1c140f">Jerusalem</text>
+  <rect x="250" y="100" width="180" height="70" rx="12" fill="#efe6d6" stroke="#c4a35a"/>
+  <text x="340" y="132" text-anchor="middle" font-family="Georgia, serif" font-size="15" fill="#5c3d2e">Ur / Haran</text>
+  <text x="340" y="152" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b5e52">Abraham's road (Gen 12)</text>
+  <path d="M340 170 L425 210 L530 246" fill="none" stroke="#8a6230" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="360" y="430" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#6b5e52">Read Genesis 12, Exodus 12-14, and Joshua 1 beside this sketch.</text>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="520" viewBox="0 0 720 520">
+  <rect width="720" height="520" fill="#f4efe6"/>
+  <text x="360" y="34" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#5c3d2e">Israel in the Days of Jesus</text>
+  <text x="360" y="56" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#6b5e52">Schematic. Places named in the Gospels.</text>
+  <rect x="70" y="80" width="90" height="360" rx="12" fill="#c5d5df"/>
+  <text x="115" y="270" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#1c3a4a" transform="rotate(-90 115 270)">Great Sea</text>
+  <rect x="190" y="86" width="250" height="100" rx="10" fill="#e7efeb" stroke="#2f5d50"/>
+  <text x="315" y="118" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#2f5d50">Galilee</text>
+  <text x="315" y="142" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#1c140f">Nazareth / Capernaum</text>
+  <text x="315" y="162" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b5e52">Much of Jesus' teaching</text>
+  <rect x="190" y="198" width="250" height="80" rx="10" fill="#efe6d6" stroke="#c4a35a"/>
+  <text x="315" y="244" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#5c3d2e">Samaria</text>
+  <rect x="190" y="290" width="250" height="140" rx="10" fill="#e7d7c3" stroke="#8a6230"/>
+  <text x="315" y="330" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#5c3d2e">Judea</text>
+  <text x="315" y="356" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#1c140f">Jerusalem</text>
+  <text x="315" y="378" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#1c140f">Bethlehem, to the south</text>
+  <text x="315" y="400" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b5e52">Micah 5:2 / Matthew 2:1</text>
+  <rect x="470" y="150" width="180" height="250" rx="12" fill="#d5e4ea" stroke="#1c3a4a"/>
+  <text x="560" y="230" text-anchor="middle" font-family="Georgia, serif" font-size="15" fill="#1c3a4a">Jordan River</text>
+  <text x="560" y="258" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#1c140f">John baptized there</text>
+  <text x="560" y="280" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#6b5e52">Matthew 3:13</text>
+  <text x="560" y="330" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#1c3a4a">Dead Sea</text>
+  <text x="360" y="490" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#6b5e52">Read Matthew 2-4, Luke 2, and John 4 with the places in front of you.</text>
+</svg>

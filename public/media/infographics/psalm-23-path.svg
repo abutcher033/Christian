@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420">
+  <rect width="720" height="420" fill="#f4efe6"/>
+  <text x="360" y="36" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#5c3d2e">The Path in Psalm 23</text>
+  <text x="360" y="58" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#6b5e52">The psalm's own words, in order</text>
+  <g font-family="Georgia, serif" fill="#1c140f">
+    <rect x="36" y="90" width="150" height="200" rx="12" fill="#e7efeb" stroke="#2f5d50"/>
+    <text x="111" y="140" text-anchor="middle" font-size="15">Pastures</text>
+    <text x="111" y="168" text-anchor="middle" font-size="13">Still waters</text>
+    <text x="111" y="210" text-anchor="middle" font-size="12" fill="#6b5e52">verses 1-2</text>
+    <rect x="206" y="90" width="150" height="200" rx="12" fill="#fff" stroke="#c4a35a"/>
+    <text x="281" y="140" text-anchor="middle" font-size="15">Right paths</text>
+    <text x="281" y="168" text-anchor="middle" font-size="13">For his name</text>
+    <text x="281" y="210" text-anchor="middle" font-size="12" fill="#6b5e52">verse 3</text>
+    <rect x="376" y="90" width="150" height="200" rx="12" fill="#efe6d6" stroke="#8a6230"/>
+    <text x="451" y="140" text-anchor="middle" font-size="15">The valley</text>
+    <text x="451" y="168" text-anchor="middle" font-size="13">You are with me</text>
+    <text x="451" y="210" text-anchor="middle" font-size="12" fill="#6b5e52">verse 4</text>
+    <rect x="546" y="90" width="140" height="200" rx="12" fill="#fff" stroke="#5c3d2e"/>
+    <text x="616" y="140" text-anchor="middle" font-size="15">The house</text>
+    <text x="616" y="168" text-anchor="middle" font-size="13">of the LORD</text>
+    <text x="616" y="210" text-anchor="middle" font-size="12" fill="#6b5e52">verses 5-6</text>
+  </g>
+  <text x="360" y="340" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#1c140f">The shepherd is the LORD (Psalm 23:1).</text>
+  <text x="360" y="368" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#1c140f">Jesus says, "I am the good shepherd" (John 10:11).</text>
+  <text x="360" y="400" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#6b5e52">That is his own claim. The psalm is not a hidden code.</text>
+</svg>
